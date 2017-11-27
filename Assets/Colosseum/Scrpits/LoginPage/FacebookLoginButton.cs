@@ -14,7 +14,7 @@ public class FacebookLoginButton : MonoBehaviour
     {
         WWWForm post = new WWWForm();
         post.AddField("id", "chinnie");
-        post.AddField("password", "69");
+        post.AddField("password", "69a");
         StartCoroutine(RestfulUtility.Post("http://localhost:3000/login", post, (data) =>
         {
             print(data.text);

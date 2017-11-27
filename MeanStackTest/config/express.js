@@ -2,6 +2,7 @@ var express = require('express');
 var morgan = require('morgan');
 var compression = require('compression');
 var bodyParser =  require('body-parser');
+var validator = require('express-validator');
 
 module.exports = function(){
     var app = express();
@@ -15,8 +16,11 @@ module.exports = function(){
         extended: true
     }));
     app.use(bodyParser.json());
+    app.use(validator());
 
     require('../app/routes/index.routes')(app);
     require('../app/routes/user.routes')(app);
+
+
     return app;
 };
