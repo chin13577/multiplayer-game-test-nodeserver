@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
+using System;
 
-public class TouchJoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, IEndDragHandler
+public class TouchJoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-
-    public RectTransform button;
+    public Action<Vector2> OnValueChange;
+    RectTransform button;
     RectTransform rect;
-    Vector2 defaultPos;
 
     void Awake()
     {
@@ -18,31 +17,34 @@ public class TouchJoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, I
     void Initial()
     {
         rect = GetComponent<RectTransform>();
-        print(defaultPos);
+        button = transform.GetChild(0).GetComponent<RectTransform>();
     }
-    public void OnPointerDown(PointerEventData eventData)
+    private Vector2 Calculate(PointerEventData eventData)
     {
         Vector2 pos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rect, eventData.position, eventData.enterEventCamera, out pos);
         pos.x = (pos.x / rect.sizeDelta.x) * 2 - 1;
         pos.y = (pos.y / rect.sizeDelta.y) * 2 + 1;
         pos = (pos.magnitude > 1) ? pos.normalized : pos;
+        return pos;
+    }
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        Vector2 pos = Calculate(eventData);
         button.anchoredPosition = new Vector2(pos.x * rect.sizeDelta.x / 2.5f, pos.y * rect.sizeDelta.y / 2.5f);
+        if (OnValueChange != null) { OnValueChange(pos); }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Vector2 pos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(rect, eventData.position, eventData.enterEventCamera, out pos);
-        pos.x = (pos.x / rect.sizeDelta.x) * 2 - 1;
-        pos.y = (pos.y / rect.sizeDelta.y) * 2 + 1;
-        pos = (pos.magnitude > 1) ? pos.normalized : pos;
+        Vector2 pos = Calculate(eventData);
         button.anchoredPosition = new Vector2(pos.x * rect.sizeDelta.x / 2.5f, pos.y * rect.sizeDelta.y / 2.5f);
+        if (OnValueChange != null) { OnValueChange(pos); }
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
         button.anchoredPosition = Vector2.zero;
+        if (OnValueChange != null) { OnValueChange(Vector2.zero); }
     }
-
 }
