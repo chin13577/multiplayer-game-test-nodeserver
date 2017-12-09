@@ -7,15 +7,13 @@ public class PlayerController : MonoBehaviour
     public TouchJoyStick joyStick;
     public Animator anim;
     public LayerMask layer;
-    CharacterController c_controller;
 
     #region Variables
     Vector3 direction;
-    public Vector3 velocity;
+    Vector3 velocity;
     [SerializeField] float speed;
 
-    public int max_jumpCount = 2;
-    int jumpCount;
+    CharacterController c_controller;
     float knockback = 0;
     bool isCanMove = false;
     bool isGrounded
@@ -37,7 +35,6 @@ public class PlayerController : MonoBehaviour
     void Initialize()
     {
         c_controller = GetComponent<CharacterController>();
-        jumpCount = max_jumpCount;
     }
     private void OnEnable()
     {
@@ -55,11 +52,8 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y = 0;
             isJumping = false;
-            jumpCount = max_jumpCount;
             if (isCanMove)
-            {
                 velocity.Set(transform.forward.x, velocity.y, transform.forward.z);
-            }
             else
                 velocity = Vector3.zero;
         }
@@ -90,27 +84,17 @@ public class PlayerController : MonoBehaviour
         Quaternion quaternion = Quaternion.LookRotation(dir);
         transform.rotation = quaternion;
     }
-    public void Jump()
-    {
-        isJumping = true;
-        if (jumpCount > 0)
-        {
-            velocity.Set(transform.forward.x, 2.5f, transform.forward.z);
-            c_controller.Move(velocity * Time.deltaTime);
-            jumpCount--;
-        }
-    }
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        Rigidbody body = hit.collider.attachedRigidbody;
-        if (body == null || body.isKinematic)
+        Rigidbody other = hit.collider.attachedRigidbody;
+        if (other == null || other.isKinematic)
             return;
 
         if (hit.moveDirection.y < -0.3F)
             return;
 
         Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-        body.velocity = pushDir * 10f;
+        other.velocity = pushDir * 10f;
     }
 
 }
