@@ -169,7 +169,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 124613138}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 208.6, y: -188.6783, z: 0}
+  m_LocalPosition: {x: 208.6, y: -188.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 794298541}
@@ -384,7 +384,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 291872055}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 324, y: -67.2283, z: 0}
+  m_LocalPosition: {x: 324, y: -67, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 813005678}
@@ -495,7 +495,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 302443261}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 228.6, y: -103.678314, z: 0}
+  m_LocalPosition: {x: 228.6, y: -103.45001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2123889376}
@@ -1496,8 +1496,8 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 808168324}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 219, y: 137, z: 0}
-  m_LocalScale: {x: 0.5475, y: 0.5475, z: 0.5475}
+  m_LocalPosition: {x: 180, y: 112.5, z: 0}
+  m_LocalScale: {x: 0.45, y: 0.45, z: 0.45}
   m_Children:
   - {fileID: 1369559057}
   - {fileID: 872607224}
@@ -1597,6 +1597,8 @@ GameObject:
   - component: {fileID: 824747030}
   - component: {fileID: 824747031}
   - component: {fileID: 824747029}
+  - component: {fileID: 824747032}
+  - component: {fileID: 824747033}
   m_Layer: 0
   m_Name: Query-Chan-SD_Niigata
   m_TagString: Untagged
@@ -1648,13 +1650,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joyStick: {fileID: 1369559060}
-  anim: {fileID: 1875772707}
+  animController: {fileID: 824747032}
   layer:
     serializedVersion: 2
     m_Bits: 4294967295
-  velocity: {x: 0, y: 0, z: 0}
-  speed: 3
-  max_jumpCount: 4
+--- !u!114 &824747032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 824747028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e29127540e032784abbf4148ad25b0ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  anim: {fileID: 1875772707}
+--- !u!114 &824747033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 824747028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42e46c3fe3ef98b4f9377271e4364ca9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSyncPosition: 0
+  isSyncRotation: 0
+  isSyncAnimation: 1
+  anim: {fileID: 1875772707}
 --- !u!1 &825798682
 GameObject:
   m_ObjectHideFlags: 0
@@ -1764,7 +1790,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 872607223}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 314.5999, y: -169.6783, z: 0}
+  m_LocalPosition: {x: 314.5999, y: -169.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 154359236}
@@ -2972,7 +2998,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1369559056}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -382, y: -7.228302, z: 0}
+  m_LocalPosition: {x: -382, y: -7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 732848511}
