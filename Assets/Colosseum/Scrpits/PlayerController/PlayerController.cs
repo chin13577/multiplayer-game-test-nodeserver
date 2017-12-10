@@ -12,17 +12,18 @@ public class PlayerController : MonoBehaviour
     public TouchJoyStick joyStick;
     public PlayerAnimatorController animController;
     public LayerMask layer;
+    public Transform atkSpawnPoint;
 
     #region Variables
     Vector3 direction;
     Vector3 velocity;
     Vector3 oldPosition;
-    float speed { get { return runSpeed + rollSpeed; } }
+    float speed { get { return runSpeed + rollSpeed + knockBackSpeed; } }
     float runSpeed;
     float rollSpeed;
+    float knockBackSpeed;
 
     CharacterController c_controller;
-    float knockback = 0;
     bool isCanMove = false;
     bool isGrounded
     {
@@ -32,6 +33,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     bool isRolling;
+    bool isKnockback;
 
     #endregion
     #region Unity Callback
@@ -54,11 +56,10 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        if (knockback > 0) { knockback -= Time.deltaTime; }
         if (velocity.y <= 0 && isGrounded)
         {
             velocity.y = 0;
-            if (isCanMove)
+            if (isCanMove && !isKnockback)
                 velocity.Set(transform.forward.x, velocity.y, transform.forward.z);
         }
         else
@@ -97,28 +98,36 @@ public class PlayerController : MonoBehaviour
     }
     public void Attack()
     {
+        if (isRolling || isKnockback) { return; }
+        GameObject g = ObjectPoolManager.instance.GetObject();
+        if (g != null)
+        {
+            g.transform.parent = null;
+            g.transform.position = atkSpawnPoint.position;
+            ObjectInPool obj = g.GetComponent<ObjectInPool>();
+            obj.owner = this.name;
+            obj.Action(transform.forward, 10f);
+        }
 
     }
     public void Roll()
     {
-        if (isRolling) { return; }
+        if (isRolling || isKnockback) { return; }
         isRolling = true;
         animController.UpdateAnimation("IsRolling");
         DOTween.To((x) => rollSpeed = x, 10, 0, 0.5f).OnComplete(() => isRolling = false);
     }
-
-
-    void OnControllerColliderHit(ControllerColliderHit hit)
+    Tween knockbackTween;
+    public void Knockback(Vector3 dir)
     {
-        Rigidbody other = hit.collider.attachedRigidbody;
-        if (other == null || other.isKinematic)
-            return;
-
-        if (hit.moveDirection.y < -0.3F)
-            return;
-
-        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-        other.velocity = pushDir * 10f;
+        if (isRolling) { return; }
+        isKnockback = true;
+        animController.UpdateAnimation("IsHit");
+        velocity.Set(dir.x, velocity.y, dir.z);
+        if (knockbackTween != null)
+            knockbackTween.Kill();
+        knockbackTween = DOTween.To((x) => knockBackSpeed = x, 10, 0, 0.5f).OnComplete(() => isKnockback = false);
     }
+    
 
 }

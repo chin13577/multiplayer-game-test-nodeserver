@@ -3,29 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class SynchronizeObject : MonoBehaviour
+public class SynchronizeTransform : MonoBehaviour
 {
     Action<Vector3> OnPositionChanged;
     Action<Quaternion> OnRotationChanged;
-    Action<int> OnAnimationChanged;
+    Action<Vector3> OnScaleChanged;
 
     public bool isSyncPosition;
     public bool isSyncRotation;
-    public bool isSyncAnimation;
+    public bool isSyncScale;
     Vector3 oldPosition;
     Quaternion oldRotation;
-    int currentHashAnimation;
-
-
-    public Animator anim;
+    Vector3 oldScale;
+    
     private void Start()
     {
         if (isSyncPosition)
             SyncPosition();
         if (isSyncRotation)
             SyncRotation();
-        if (isSyncAnimation)
-            SyncAnimation();
+        if (isSyncScale)
+            SyncScale();
     }
 
     void FixedUpdate()
@@ -34,8 +32,6 @@ public class SynchronizeObject : MonoBehaviour
             SyncPosition();
         if (isSyncRotation)
             SyncRotation();
-        if (isSyncAnimation)
-            SyncAnimation();
     }
     void SyncPosition()
     {
@@ -55,13 +51,13 @@ public class SynchronizeObject : MonoBehaviour
                 OnRotationChanged(oldRotation);
         }
     }
-    void SyncAnimation()
+    void SyncScale()
     {
-        if(currentHashAnimation!= anim.GetCurrentAnimatorStateInfo(0).shortNameHash)
+        if (oldScale != transform.localScale)
         {
-            currentHashAnimation = anim.GetCurrentAnimatorStateInfo(0).shortNameHash;
-            if (OnAnimationChanged != null)
-                OnAnimationChanged(currentHashAnimation);
+            oldScale = transform.localScale;
+            if (OnScaleChanged != null)
+                OnScaleChanged(oldScale);
         }
     }
 }
