@@ -7,11 +7,14 @@ public class Fireball : ObjectInPool {
     public override void Action(Vector3 dir, float speed)
     {
         isAction = true;
-        StartCoroutine(UpdatePos(dir, speed,6f));
+        Quaternion quaternion = Quaternion.FromToRotation(transform.forward,dir);
+        transform.rotation = quaternion;
+        StartCoroutine(UpdatePos(speed,6f));
     }
 
     public override void ResetValue()
     {
+        transform.rotation = Quaternion.identity;
         isAction = false;
         StopAllCoroutines();
     }
@@ -26,12 +29,12 @@ public class Fireball : ObjectInPool {
             base.DestroyObject();
         }
     }
-    IEnumerator UpdatePos(Vector3 dir,float speed,float lifeTime)
+    IEnumerator UpdatePos(float speed,float lifeTime)
     {
         while (lifeTime > 0)
         {
             lifeTime -= Time.deltaTime;
-            transform.Translate(dir * speed * Time.deltaTime);
+            transform.Translate(Vector3.forward * speed * Time.deltaTime);
             yield return null;
         }
         base.DestroyObject();
