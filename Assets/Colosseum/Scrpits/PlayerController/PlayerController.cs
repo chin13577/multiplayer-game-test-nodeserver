@@ -6,10 +6,7 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
-    public delegate void onAnimationChange(string name, object args = null);
-    public event onAnimationChange OnAnimationChange;
-
-    public TouchJoyStick joyStick;
+    ControllerManager controller;
     public PlayerAnimatorController animController;
     public LayerMask layer;
     public Transform atkSpawnPoint;
@@ -45,14 +42,15 @@ public class PlayerController : MonoBehaviour
     {
         c_controller = GetComponent<CharacterController>();
         velocity.Set(transform.forward.x, velocity.y, transform.forward.z);
+        controller = ControllerManager.instance;
     }
     private void OnEnable()
     {
-        joyStick.OnValueChange += Callback_OnJoyStickValueChange;
+        controller.OnLeftJoyStickChange += Callback_OnJoyStickValueChange;
     }
     private void OnDisable()
     {
-        joyStick.OnValueChange -= Callback_OnJoyStickValueChange;
+        controller.OnLeftJoyStickChange -= Callback_OnJoyStickValueChange;
     }
     private void Update()
     {

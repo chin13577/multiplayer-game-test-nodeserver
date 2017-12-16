@@ -5,12 +5,11 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SkillJoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class SkillJoyStick : SkillButton, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    public Action<Vector2> OnValueChange;
-    public Action<bool> OnPress;
 
     public bool isSelectArea;
+    public int index;
     bool isCancel;
     public Image skillImage;
     public Image skillCooldownImage;
@@ -18,13 +17,16 @@ public class SkillJoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, I
     public RectTransform stickImage;
     public RectTransform border;
 
-    void Awake()
+    Vector2 pos;
+
+     void Awake()
     {
         Initial();
     }
-    
+
     void Initial()
     {
+        image = GetComponent<Image>();
         canvasGroup.alpha = 0;
         if (isSelectArea == false)
             canvasGroup.gameObject.SetActive(false);
@@ -43,37 +45,37 @@ public class SkillJoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, I
         pos = (pos.magnitude > 1) ? pos.normalized : pos;
         return pos;
     }
+    public void UpdateStickPosition(Vector2 pos)
+    {
+        stickImage.anchoredPosition = new Vector2(pos.x * border.sizeDelta.x / 2.5f, pos.y * border.sizeDelta.y / 2.5f);
+    }
     public void OnPointerDown(PointerEventData eventData)
     {
         if (isSelectArea)
         {
             canvasGroup.alpha = 0.5f;
-            Vector2 pos = Calculate(eventData);
-            stickImage.anchoredPosition = new Vector2(pos.x * border.sizeDelta.x / 2.5f, pos.y * border.sizeDelta.y / 2.5f);
-            if (OnValueChange != null) { OnValueChange(pos); }
+            pos = Calculate(eventData);
+            ControllerManager.instance.SkillValueChange(ref pos, this);
         }
-        if (OnPress != null)
-            OnPress(true);
+        ControllerManager.instance.SkillBtnPress(true, this);
     }
     public void OnDrag(PointerEventData eventData)
     {
         if (!isSelectArea) return;
-        Vector2 pos = Calculate(eventData);
-        stickImage.anchoredPosition = new Vector2(pos.x * border.sizeDelta.x / 2.5f, pos.y * border.sizeDelta.y / 2.5f);
-        if (OnValueChange != null) { OnValueChange(pos); }
+        pos = Calculate(eventData);
+        ControllerManager.instance.SkillValueChange(ref pos, this);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         if (!isSelectArea) return;
         canvasGroup.alpha = 0;
-        stickImage.anchoredPosition = Vector2.zero;
-        if (OnValueChange != null) { OnValueChange(Vector2.zero); }
+        pos = Vector2.zero;
+        ControllerManager.instance.SkillValueChange(ref pos, this);
 
         if (isCancel == false)
         {
-            if (OnPress != null)
-                OnPress(false);
+            ControllerManager.instance.SkillBtnPress(false, this);
         }
         else
             isCancel = false;

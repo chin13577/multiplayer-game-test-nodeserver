@@ -709,6 +709,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSelectArea: 1
+  index: 0
   skillImage: {fileID: 291872058}
   skillCooldownImage: {fileID: 787838557}
   canvasGroup: {fileID: 641576250}
@@ -797,6 +798,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSelectArea: 1
+  index: 0
   skillImage: {fileID: 302443264}
   skillCooldownImage: {fileID: 664394166}
   canvasGroup: {fileID: 187920679}
@@ -1222,7 +1224,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!114 &439898017
 MonoBehaviour:
@@ -1616,7 +1618,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &506464694
 GameObject:
@@ -2182,6 +2184,50 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 732848510}
+--- !u!1 &737749002
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 737749004}
+  - component: {fileID: 737749003}
+  m_Layer: 0
+  m_Name: Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &737749003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 737749002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cf4728618607be49a98be1973cc390b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftJoyStick: {fileID: 1369559060}
+  skillJoyStick:
+  - {fileID: 302443266}
+  - {fileID: 291872060}
+--- !u!4 &737749004
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 737749002}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 347.24222, y: 129.63037, z: 6.6875}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &787838555
 GameObject:
   m_ObjectHideFlags: 0
@@ -2537,7 +2583,7 @@ RectTransform:
   m_Children:
   - {fileID: 1205530151}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2596,7 +2642,7 @@ Transform:
   - {fileID: 1943477912}
   - {fileID: 1354599301}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &824747031
 MonoBehaviour:
@@ -2609,7 +2655,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0805c0929bf3847a3bf8d45f1a921c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  joyStick: {fileID: 1369559060}
   animController: {fileID: 824747032}
   layer:
     serializedVersion: 2
@@ -2723,7 +2768,7 @@ Transform:
   m_LocalScale: {x: 20, y: 20, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &843015817
 GameObject:
@@ -2976,7 +3021,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &935249536
 GameObject:
@@ -3317,7 +3362,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0805c0929bf3847a3bf8d45f1a921c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  joyStick: {fileID: 1369559060}
   animController: {fileID: 996783725}
   layer:
     serializedVersion: 2
@@ -3337,7 +3381,7 @@ Transform:
   - {fileID: 488428734}
   - {fileID: 1417968353}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &998584810
 GameObject:
@@ -3544,7 +3588,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1109308415
 GameObject:
@@ -3644,7 +3688,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1122653229
 GameObject:
@@ -4020,9 +4064,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1205530151}
-  - component: {fileID: 1205530152}
   m_Layer: 5
-  m_Name: Controller
+  m_Name: GamePad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4052,20 +4095,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1205530152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1205530150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3237987f51a689340baf30a8f6a59d39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillJoyStick:
-  - {fileID: 302443266}
-  - {fileID: 291872060}
 --- !u!1 &1210737484
 GameObject:
   m_ObjectHideFlags: 0
@@ -5304,7 +5333,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1636365253
 GameObject:
@@ -5545,7 +5574,7 @@ Transform:
   - {fileID: 1320567587}
   - {fileID: 935249537}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1736401592
 GameObject:
@@ -6349,5 +6378,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
