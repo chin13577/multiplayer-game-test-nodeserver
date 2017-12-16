@@ -708,6 +708,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0362606cfffca0448b90a071241adf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isActivate: 0
   isSelectArea: 1
   index: 0
   skillImage: {fileID: 291872058}
@@ -797,6 +798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0362606cfffca0448b90a071241adf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isActivate: 0
   isSelectArea: 1
   index: 0
   skillImage: {fileID: 302443264}
@@ -2213,6 +2215,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftJoyStick: {fileID: 1369559060}
   skillJoyStick:
+  - {fileID: 302443266}
+  - {fileID: 291872060}
+  skillButton:
   - {fileID: 302443266}
   - {fileID: 291872060}
 --- !u!4 &737749004

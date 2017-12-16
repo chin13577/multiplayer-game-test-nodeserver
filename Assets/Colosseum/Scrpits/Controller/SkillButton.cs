@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkillButton : MonoBehaviour {
-    public Image image;
+public class SkillButton : MonoBehaviour
+{
+    public bool isActivate;
     public void SetActive(bool isActive)
     {
-        image.raycastTarget = isActive;
+        isActivate = isActive;
     }
 }

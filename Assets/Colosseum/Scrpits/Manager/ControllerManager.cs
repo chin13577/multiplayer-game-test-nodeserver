@@ -11,6 +11,7 @@ public class ControllerManager : MonoBehaviour
     public static ControllerManager instance = null;
     public TouchJoyStick leftJoyStick;
     public SkillJoyStick[] skillJoyStick;
+    public SkillButton[] skillButton;
 
     private SkillJoyStick selectedSkillBtn;
 
@@ -41,32 +42,34 @@ public class ControllerManager : MonoBehaviour
     public void SkillBtnPress(bool isPress, SkillJoyStick button)
     {
         if (isPress == true)
-        {
-            if (selectedSkillBtn == null)
-                selectedSkillBtn = button;
-            else
-                return;
-        }
+            selectedSkillBtn = button;
         else
-        {
-            if (selectedSkillBtn == button)
-                selectedSkillBtn = null;
-            else
-                return;
-        }
+            selectedSkillBtn = null;
+
+        UpdateActivateSkillButton(isPress);
         if (OnSkillBtnPress != null)
             OnSkillBtnPress(isPress, GetSkillButtonIndex(button));
     }
     public void SkillValueChange(ref Vector2 value, SkillJoyStick button)
     {
-        if (selectedSkillBtn != button)
-            return;
-        if (selectedSkillBtn.isSelectArea == false)
-            return;
-        selectedSkillBtn.UpdateStickPosition(value);
         if (OnSkillBtnDrag != null)
             OnSkillBtnDrag(value);
-
+    }
+    void UpdateActivateSkillButton(bool isPress)
+    {
+        if (isPress)
+        {
+            for (int i = 0; i < skillButton.Length; i++)
+            {
+                if (selectedSkillBtn != skillButton[i])
+                    skillButton[i].SetActive(false);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < skillButton.Length; i++)
+                skillButton[i].SetActive(true);
+        }
     }
     int GetSkillButtonIndex(SkillJoyStick btn)
     {
