@@ -9,6 +9,8 @@ public class ControllerManager : MonoBehaviour
     public Action<Vector2> OnSkillBtnDrag;
     public Action<bool, int> OnSkillBtnPress;
     public static ControllerManager instance = null;
+    public NormalActionButton rollBtn;
+    public NormalActionButton atkBtn;
     public TouchJoyStick leftJoyStick;
     public SkillJoyStick[] skillJoyStick;
     public SkillButton[] skillButton;
