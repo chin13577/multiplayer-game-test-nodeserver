@@ -36,6 +36,14 @@ public class ControllerManager : MonoBehaviour
     {
         leftJoyStick.OnValueChange -= Callback_OnLeftJoyStickChange;
     }
+    void OnPlayerCreated(PlayerController playerController)
+    {
+        if (playerController.isLocalPlayer)
+        {
+            skillJoyStick[0].isSelectArea = playerController.skill[0].isSelectArea;
+            skillJoyStick[1].isSelectArea = playerController.skill[1].isSelectArea;
+        }
+    }
     void Callback_OnLeftJoyStickChange(Vector2 pos)
     {
         if (OnLeftJoyStickChange != null)
