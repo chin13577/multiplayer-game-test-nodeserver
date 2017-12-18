@@ -11,9 +11,9 @@ public class Skill
     public Skill(SkillType type)
     {
         this.skillType = type;
-        if (type != SkillType.AOE && type != SkillType.Single)
+        if (type == SkillType.AOE || type == SkillType.Single)
         {
-            isSelectArea = false;
+            isSelectArea = true;
         }
     }
 }

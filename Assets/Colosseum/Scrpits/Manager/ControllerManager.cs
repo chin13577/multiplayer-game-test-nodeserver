@@ -8,32 +8,41 @@ public class ControllerManager : MonoBehaviour
     public Action<Vector2> OnLeftJoyStickChange;
     public Action<Vector2> OnSkillBtnDrag;
     public Action<bool, int> OnSkillBtnPress;
-    public static ControllerManager instance = null;
     public NormalActionButton rollBtn;
     public NormalActionButton atkBtn;
     public TouchJoyStick leftJoyStick;
     public SkillJoyStick[] skillJoyStick;
     public SkillButton[] skillButton;
 
-    private SkillJoyStick selectedSkillBtn;
-
+    private SkillButton selectedSkillBtn;
+    public static ControllerManager _instance = null;
+    public static ControllerManager instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.FindObjectOfType<ControllerManager>();
+            }
+            return _instance;
+        }
+    }
     //Awake is always called before any Start functions
     void Awake()
     {
-        if (instance != null && instance != this)
+        if (_instance == null)
         {
-            Destroy(this.gameObject);
-            return;
+            _instance = this;
         }
-        instance = this;
-        DontDestroyOnLoad(this.gameObject);
     }
     private void OnEnable()
     {
+        PlayerController.OnPlayerCreated += OnPlayerCreated;
         leftJoyStick.OnValueChange += Callback_OnLeftJoyStickChange;
     }
     private void OnDisable()
     {
+        PlayerController.OnPlayerCreated -= OnPlayerCreated;
         leftJoyStick.OnValueChange -= Callback_OnLeftJoyStickChange;
     }
     void OnPlayerCreated(PlayerController playerController)
@@ -49,7 +58,7 @@ public class ControllerManager : MonoBehaviour
         if (OnLeftJoyStickChange != null)
             OnLeftJoyStickChange(pos);
     }
-    public void SkillBtnPress(bool isPress, SkillJoyStick button)
+    public void SkillBtnPress(bool isPress, SkillButton button)
     {
         if (isPress == true)
             selectedSkillBtn = button;
@@ -59,6 +68,14 @@ public class ControllerManager : MonoBehaviour
         UpdateActivateSkillButton(isPress);
         if (OnSkillBtnPress != null)
             OnSkillBtnPress(isPress, GetSkillButtonIndex(button));
+    }
+    public void ActionBtnPress(bool isPress, SkillButton button)
+    {
+        if (isPress == true)
+            selectedSkillBtn = button;
+        else
+            selectedSkillBtn = null;
+        UpdateActivateSkillButton(isPress);
     }
     public void SkillValueChange(ref Vector2 value, SkillJoyStick button)
     {
@@ -81,7 +98,7 @@ public class ControllerManager : MonoBehaviour
                 skillButton[i].SetActive(true);
         }
     }
-    int GetSkillButtonIndex(SkillJoyStick btn)
+    int GetSkillButtonIndex(SkillButton btn)
     {
         for (int i = 0; i < skillJoyStick.Length; i++)
         {

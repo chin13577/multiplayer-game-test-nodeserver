@@ -7,10 +7,15 @@ using System;
 public class NormalActionButton : SkillButton, IPointerDownHandler , IPointerUpHandler
 {
     public Action<bool> OnPress;
+    void Awake()
+    {
+        isActivate = true;
+    }
     public void OnPointerDown(PointerEventData eventData)
     {
         if (isActivate == false)
             return;
+        ControllerManager.instance.ActionBtnPress(true, this);
         if (OnPress != null)
             OnPress(true);
     }
@@ -18,6 +23,7 @@ public class NormalActionButton : SkillButton, IPointerDownHandler , IPointerUpH
     {
         if (isActivate == false)
             return;
+        ControllerManager.instance.ActionBtnPress(false, this);
         if (OnPress != null)
             OnPress(false);
     }
