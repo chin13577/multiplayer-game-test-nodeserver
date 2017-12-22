@@ -4,11 +4,11 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 
-public class PlayerController : MonoBehaviour
+public class Player : MonoBehaviour
 {
-    public delegate void onPlayerCreated(PlayerController playerController);
+    public delegate void onPlayerCreated(Player playerController);
     public static event onPlayerCreated OnPlayerCreated;
-    ControllerManager controller;
+    InputHandler controller;
     public PlayerAnimatorController animController;
     public LayerMask layer;
     public Transform atkSpawnPoint;
@@ -45,11 +45,12 @@ public class PlayerController : MonoBehaviour
     {
         c_controller = GetComponent<CharacterController>();
         velocity.Set(transform.forward.x, velocity.y, transform.forward.z);
-        controller = ControllerManager.instance;
+        controller = InputHandler.instance;
         // morkup skill.
-        skill = new Skill[2] { new Skill(Skill.SkillType.Single), new Skill(Skill.SkillType.AOE) };
-        skill[0].distance = 4f;
-        skill[1].distance = 4f;
+        skill = new Skill[3] { new Skill(Skill.SkillType.Single),new Skill(Skill.SkillType.Single), new Skill(Skill.SkillType.AOE) };
+        skill[0].distance = 3f;
+        skill[1].distance = 3f;
+        skill[2].distance = 3.5f;
     }
     private void Start()
     {
@@ -62,13 +63,13 @@ public class PlayerController : MonoBehaviour
     {
         if (isLocalPlayer == false)
             return;
-        controller.OnLeftJoyStickChange += Callback_OnJoyStickValueChange;
+        controller.OnMovementBtnDrag += Callback_OnJoyStickValueChange;
     }
     private void OnDisable()
     {
         if (isLocalPlayer == false)
             return;
-        controller.OnLeftJoyStickChange -= Callback_OnJoyStickValueChange;
+        controller.OnMovementBtnDrag -= Callback_OnJoyStickValueChange;
     }
     private void Update()
     {

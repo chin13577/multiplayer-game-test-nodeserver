@@ -24,7 +24,7 @@ public class Fireball : ObjectInPool {
         {
             if(other.tag == "Player")
             {
-                other.GetComponent<PlayerController>().Knockback(this.transform.forward);
+                other.GetComponent<Player>().Knockback(this.transform.forward);
             }
             base.DestroyObject();
         }

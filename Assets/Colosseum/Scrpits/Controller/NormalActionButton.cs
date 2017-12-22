@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 
-public class NormalActionButton : SkillButton, IPointerDownHandler , IPointerUpHandler
+public class NormalActionButton : ActionJoyStick, IPointerDownHandler , IPointerUpHandler
 {
     public Action<bool> OnPress;
     void Awake()
@@ -15,7 +15,7 @@ public class NormalActionButton : SkillButton, IPointerDownHandler , IPointerUpH
     {
         if (isActivate == false)
             return;
-        ControllerManager.instance.ActionBtnPress(true, this);
+        InputHandler.instance.ActionBtnPress(true, this);
         if (OnPress != null)
             OnPress(true);
     }
@@ -23,7 +23,7 @@ public class NormalActionButton : SkillButton, IPointerDownHandler , IPointerUpH
     {
         if (isActivate == false)
             return;
-        ControllerManager.instance.ActionBtnPress(false, this);
+        InputHandler.instance.ActionBtnPress(false, this);
         if (OnPress != null)
             OnPress(false);
     }

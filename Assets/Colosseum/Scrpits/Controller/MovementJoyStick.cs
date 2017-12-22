@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 
-public class TouchJoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class MovementJoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     public Action<Vector2> OnValueChange;
     RectTransform button;

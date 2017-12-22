@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SkillButton : MonoBehaviour
+public class ActionJoyStick : MonoBehaviour
 {
+    public enum ActionButton { Roll = -1, Attack, Skill1, Skill2 }
+    public ActionButton buttonType;
     public bool isActivate;
     public void SetActive(bool isActive)
     {

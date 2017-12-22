@@ -5,10 +5,9 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class SkillJoyStick : SkillButton, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class SkillJoyStick : ActionJoyStick, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     public bool isSelectArea;
-    public int index;
     bool isCancel;
     public Image skillImage;
     public Image skillCooldownImage;
@@ -57,9 +56,9 @@ public class SkillJoyStick : SkillButton, IPointerDownHandler, IDragHandler, IPo
             canvasGroup.alpha = 0.5f;
             pos = Calculate(eventData);
             UpdateStickPosition(pos);
-            ControllerManager.instance.SkillValueChange(ref pos, this);
+            InputHandler.instance.ActionBtnDrag(ref pos);
         }
-        ControllerManager.instance.SkillBtnPress(true, this);
+        InputHandler.instance.ActionBtnPress(true, this);
     }
     public void OnDrag(PointerEventData eventData)
     {
@@ -68,7 +67,7 @@ public class SkillJoyStick : SkillButton, IPointerDownHandler, IDragHandler, IPo
         if (!isSelectArea) return;
         pos = Calculate(eventData);
         UpdateStickPosition(pos);
-        ControllerManager.instance.SkillValueChange(ref pos, this);
+        InputHandler.instance.ActionBtnDrag(ref pos);
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -79,10 +78,10 @@ public class SkillJoyStick : SkillButton, IPointerDownHandler, IDragHandler, IPo
         canvasGroup.alpha = 0;
         pos = Vector2.zero;
         UpdateStickPosition(pos);
-        ControllerManager.instance.SkillValueChange(ref pos, this);
+        InputHandler.instance.ActionBtnDrag(ref pos);
 
         if (isCancel == false)
-            ControllerManager.instance.SkillBtnPress(false, this);
+            InputHandler.instance.ActionBtnPress(false, this);
         else
             isCancel = false;
     }
