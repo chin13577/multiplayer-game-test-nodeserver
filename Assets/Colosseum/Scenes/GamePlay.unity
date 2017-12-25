@@ -299,7 +299,7 @@ RectTransform:
   m_Children:
   - {fileID: 794298541}
   m_Father: {fileID: 1205530151}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -391,7 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0ddb7519594bd341ad48bac37497f93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonType: -1
+  buttonIndex: -1
   isActivate: 0
 --- !u!1 &151281031
 GameObject:
@@ -721,7 +721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0362606cfffca0448b90a071241adf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonType: 2
+  buttonIndex: 2
   isActivate: 0
   isSelectArea: 1
   skillImage: {fileID: 291872058}
@@ -811,7 +811,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0362606cfffca0448b90a071241adf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonType: 1
+  buttonIndex: 1
   isActivate: 0
   isSelectArea: 1
   skillImage: {fileID: 302443264}
@@ -1240,7 +1240,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 56.31, y: 0, z: 0}
 --- !u!114 &439898017
 MonoBehaviour:
@@ -1634,7 +1634,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &506464694
 GameObject:
@@ -2269,7 +2269,7 @@ RectTransform:
   - {fileID: 2032965585}
   - {fileID: 602084167}
   m_Father: {fileID: 1205530151}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -2287,7 +2287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0362606cfffca0448b90a071241adf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonType: 0
+  buttonIndex: 0
   isActivate: 0
   isSelectArea: 1
   skillImage: {fileID: 676304600}
@@ -2430,9 +2430,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rollBtn: {fileID: 124613144}
   movementStick: {fileID: 1369559060}
-  skillJoyStick:
-  - {fileID: 302443266}
-  - {fileID: 291872060}
   actionStick:
   - {fileID: 676304599}
   - {fileID: 124613144}
@@ -2821,7 +2818,7 @@ RectTransform:
   m_Children:
   - {fileID: 1205530151}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2879,7 +2876,7 @@ Transform:
   - {fileID: 1875772706}
   - {fileID: 1943477912}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &824747031
 MonoBehaviour:
@@ -2898,7 +2895,19 @@ MonoBehaviour:
     m_Bits: 4294967295
   atkSpawnPoint: {fileID: 1943477912}
   isLocalPlayer: 1
-  skill: []
+  skill:
+  - skillType: 0
+    skillName: 0
+    distance: 0
+    isSelectArea: 0
+  - skillType: 0
+    skillName: 1
+    distance: 0
+    isSelectArea: 0
+  - skillType: 0
+    skillName: 2
+    distance: 0
+    isSelectArea: 0
 --- !u!114 &824747032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3007,7 +3016,7 @@ Transform:
   m_LocalScale: {x: 20, y: 20, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &843015817
 GameObject:
@@ -3229,7 +3238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0ddb7519594bd341ad48bac37497f93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonType: 0
+  buttonIndex: 0
   isActivate: 0
 --- !u!1 &912840234
 GameObject:
@@ -3239,6 +3248,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 912840236}
+  - component: {fileID: 912840237}
   - component: {fileID: 912840235}
   m_Layer: 0
   m_Name: ObjectPoolManager
@@ -3258,9 +3268,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a30759651a0966940b5e781f18edc6e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabs: {fileID: 114320519555049006, guid: ace7d3145e87b1d4e93ea303132e1764, type: 2}
-  amount: 10
-  autoIncrement: 0
+  skillPrefabs:
+  - {fileID: 114320519555049006, guid: ace7d3145e87b1d4e93ea303132e1764, type: 2}
+  - {fileID: 114290925247754926, guid: 07cc5280fa7d35f4abfe053de41f0d20, type: 2}
+  - {fileID: 114691250083631554, guid: 2c1cd9c71f45b08438b21690572234bc, type: 2}
+  amount: 8
+  autoIncrement: 1
 --- !u!4 &912840236
 Transform:
   m_ObjectHideFlags: 0
@@ -3272,8 +3285,21 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &912840237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 912840234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8705f963f3788fd4aae495aa5b02d894, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillCreator: {fileID: 912840235}
+  skills: {fileID: 11400000, guid: 18fae7068eca6014aac7be5c3f000c2b, type: 2}
 --- !u!1 &935249536
 GameObject:
   m_ObjectHideFlags: 0
@@ -3860,7 +3886,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1109308415
 GameObject:
@@ -3960,7 +3986,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1122653229
 GameObject:
@@ -4355,8 +4381,8 @@ RectTransform:
   m_Children:
   - {fileID: 1369559057}
   - {fileID: 872607224}
-  - {fileID: 676304598}
   - {fileID: 124613139}
+  - {fileID: 676304598}
   - {fileID: 302443262}
   - {fileID: 291872056}
   - {fileID: 371390034}
@@ -5005,7 +5031,7 @@ Transform:
   - {fileID: 674846049}
   - {fileID: 151281032}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1358051323
 GameObject:
@@ -5675,7 +5701,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1636365253
 GameObject:
@@ -5916,7 +5942,7 @@ Transform:
   - {fileID: 1320567587}
   - {fileID: 935249537}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1736401592
 GameObject:
@@ -6903,5 +6929,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

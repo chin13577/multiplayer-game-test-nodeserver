@@ -7,7 +7,7 @@ public class InputHandler : MonoBehaviour
 {
     public Action<Vector2> OnMovementBtnDrag;
     public Action<Vector2> OnActionBtnDrag;
-    public Action<bool, ActionJoyStick.ActionButton> OnSkillBtnPress;
+    public Action<bool,int> OnSkillBtnPress;
     public NormalActionButton rollBtn;
     public MovementJoyStick movementStick;
     public ActionJoyStick[] actionStick;
@@ -65,7 +65,7 @@ public class InputHandler : MonoBehaviour
 
         UpdateActivateSkillButton(isPress);
         if (OnSkillBtnPress != null)
-            OnSkillBtnPress(isPress, button.buttonType);
+            OnSkillBtnPress(isPress,button.buttonIndex);
     }
     public void ActionBtnDrag(ref Vector2 value)
     {

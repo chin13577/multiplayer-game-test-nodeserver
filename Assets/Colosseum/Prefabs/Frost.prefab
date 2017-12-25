@@ -22,10 +22,10 @@ GameObject:
   - component: {fileID: 33818274050389108}
   - component: {fileID: 135910211200080056}
   - component: {fileID: 23737567263650710}
-  - component: {fileID: 114320519555049006}
   - component: {fileID: 54234021761691532}
+  - component: {fileID: 114691250083631554}
   m_Layer: 0
-  m_Name: Fireball
+  m_Name: Frost
   m_TagString: Skill
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,8 +38,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1421861151414996}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.068603516, y: 0.34643555, z: -1.13}
-  m_LocalScale: {x: 0.45501375, y: 0.45501375, z: 0.45501375}
+  m_LocalPosition: {x: 0.068603516, y: 0, z: -1.13}
+  m_LocalScale: {x: 2, y: 1, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -100,7 +100,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &114320519555049006
+--- !u!114 &114691250083631554
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -108,11 +108,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1421861151414996}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1944ab49652e7e46990ebfbd664cb04, type: 3}
+  m_Script: {fileID: 11500000, guid: f3e417708798c7744a97be8d7e35d5b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   skillData:
-    skillType: 1
+    skillType: 0
     skillName: 0
     distance: 0
     isSelectArea: 0
@@ -127,5 +127,5 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}

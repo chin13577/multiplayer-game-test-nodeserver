@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 public class ActionJoyStick : MonoBehaviour
 {
-    public enum ActionButton { Roll = -1, Attack, Skill1, Skill2 }
-    public ActionButton buttonType;
+    public int buttonIndex;
     public bool isActivate;
     public void SetActive(bool isActive)
     {

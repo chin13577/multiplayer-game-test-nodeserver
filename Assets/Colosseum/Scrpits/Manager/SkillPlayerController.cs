@@ -13,7 +13,7 @@ public class SkillPlayerController : MonoBehaviour
     public Transform aoeTransform;
     public Transform normalAtkTransform;
     Transform currentSkillTransform;
-    Skill currentSkill;
+    SkillData currentSkill;
     Player player;
 
     IEnumerator actionCo;
@@ -42,24 +42,25 @@ public class SkillPlayerController : MonoBehaviour
             player = playerController;
         }
     }
-    void Callback_OnSkillBtnPress(bool isPress, ActionJoyStick.ActionButton buttonType)
+    void Callback_OnSkillBtnPress(bool isPress,int buttonIndex)
     {
-        if (buttonType == ActionJoyStick.ActionButton.Roll) return;
+        if (buttonIndex == -1) return;
         if (isPress)
         {
-            currentSkill = player.skill[(int)buttonType];
+            currentSkill = player.skill[buttonIndex];
             ShowSkillGuide(currentSkill);
             
         }
         else
         {
+            player.UseSkill(currentSkill.skillName, currentSkillTransform);
             //reset
             HideSkillGuide();
         }
     }
-    void ShowSkillGuide(Skill skill)
+    void ShowSkillGuide(SkillData skill)
     {
-        if (skill.skillType == Skill.SkillType.Single)
+        if (skill.skillType == SkillData.SkillType.Single)
         {
             currentSkillTransform = singleTargetTransform;
             aoeTransform.gameObject.SetActive(false);
@@ -68,7 +69,7 @@ public class SkillPlayerController : MonoBehaviour
             Quaternion quaternion = Quaternion.LookRotation(player.transform.forward);
             currentSkillTransform.rotation = quaternion;
         }
-        else if (skill.skillType == Skill.SkillType.AOE)
+        else if (skill.skillType == SkillData.SkillType.AOE)
         {
             currentSkillTransform = aoeTransform;
             aoeTransform.gameObject.SetActive(true);
@@ -87,12 +88,13 @@ public class SkillPlayerController : MonoBehaviour
     void Callback_OnSkillBtnDrag(Vector2 value)
     {
         if (currentSkill == null) return;
-        if (currentSkill.skillType == Skill.SkillType.AOE)
+        if (currentSkill.skillType == SkillData.SkillType.AOE)
         {
+            if (value == Vector2.zero) return;
             value = value * currentSkill.distance;
             currentSkillTransform.position = new Vector3(player.transform.position.x + value.x, player.transform.position.y, player.transform.position.z + value.y);
         }
-        else if (currentSkill.skillType == Skill.SkillType.Single)
+        else if (currentSkill.skillType == SkillData.SkillType.Single)
         {
             if (value == Vector2.zero) return;
             Vector3 dir = new Vector3(value.x, 0, value.y);

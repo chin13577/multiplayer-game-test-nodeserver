@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     public Transform atkSpawnPoint;
     #region Variables
     public bool isLocalPlayer;
-    public Skill[] skill;
+    public SkillData[] skill;
     Vector3 direction;
     Vector3 velocity;
     Vector3 oldPosition;
@@ -46,17 +46,9 @@ public class Player : MonoBehaviour
         c_controller = GetComponent<CharacterController>();
         velocity.Set(transform.forward.x, velocity.y, transform.forward.z);
         controller = InputHandler.instance;
-        // morkup skill.
-        skill = new Skill[3] { new Skill(Skill.SkillType.Single),new Skill(Skill.SkillType.Single), new Skill(Skill.SkillType.AOE) };
-        skill[0].distance = 3f;
-        skill[1].distance = 3f;
-        skill[2].distance = 3.5f;
-    }
-    private void Start()
-    {
-        if (isLocalPlayer && OnPlayerCreated != null)
+        for (int i = 0; i < skill.Length; i++)
         {
-            OnPlayerCreated(this);
+            skill[i] = SkillFactory.Instance.GetSkillData(skill[i].skillName);
         }
     }
     private void OnEnable()
@@ -71,6 +63,13 @@ public class Player : MonoBehaviour
             return;
         controller.OnMovementBtnDrag -= Callback_OnJoyStickValueChange;
     }
+    private void Start()
+    {
+        if (isLocalPlayer && OnPlayerCreated != null)
+        {
+            OnPlayerCreated(this);
+        }
+    }
     private void Update()
     {
         if (velocity.y <= 0 && isGrounded)
@@ -81,7 +80,7 @@ public class Player : MonoBehaviour
         }
         else
             velocity = velocity + Physics.gravity * Time.deltaTime;
-        
+
         c_controller.Move(velocity * Time.deltaTime * speed);
 
     }
@@ -109,18 +108,19 @@ public class Player : MonoBehaviour
         Quaternion quaternion = Quaternion.LookRotation(dir);
         transform.rotation = quaternion;
     }
-    public void Attack()
+    public void UseSkill(SkillFactory.SkillName skillName,Transform currentSkillTransform)
     {
         if (isRolling || isKnockback) { return; }
-        GameObject g = ObjectPoolManager.instance.GetObject();
+        // Initial skill
+        GameObject g = SkillFactory.Instance.GetSkillObject(skillName);
         if (g != null)
         {
-            g.transform.parent = null;
-            g.transform.position = atkSpawnPoint.position;
-            ObjectInPool obj = g.GetComponent<ObjectInPool>();
+            Skill obj = g.GetComponent<Skill>();
             obj.owner = this.name;
-            obj.Action(transform.forward, 10f);
+            obj.Action(currentSkillTransform);
         }
+        // cast anim
+
     }
     public void Roll()
     {
