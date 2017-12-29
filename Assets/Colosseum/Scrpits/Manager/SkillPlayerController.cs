@@ -16,7 +16,7 @@ public class SkillPlayerController : MonoBehaviour
     Transform currentSkillTransform;
     SkillData currentSkill;
     Player player;
-
+    Vector3 attackDir;
     bool isCancelSkill;
 
     IEnumerator actionCo;
@@ -57,6 +57,7 @@ public class SkillPlayerController : MonoBehaviour
     {
         if (button.isCooldown == true) return;
         if (button.buttonIndex == -1) return;
+        if (player.playerState == Player.PlayerState.Casting) return;
         //if (player.playerState == Player.PlayerState.Rolling) return;
 
         if (isPress)
@@ -69,7 +70,7 @@ public class SkillPlayerController : MonoBehaviour
             if (currentSkill == null) return;
             if (isCancelSkill == false)
             {
-                player.UseSkill(currentSkill.skillName, currentSkillTransform);
+                player.UseSkill(currentSkill, currentSkillTransform, attackDir);
                 //cooldown
                 button.SetCoolDown(currentSkill.coolDown);
             }
@@ -112,6 +113,7 @@ public class SkillPlayerController : MonoBehaviour
         {
             if (value == Vector2.zero) return;
             value = value * currentSkill.distance;
+            currentSkillTransform.localScale = Vector3.one * currentSkill.size;
             currentSkillTransform.position = new Vector3(player.transform.position.x + value.x, player.transform.position.y, player.transform.position.z + value.y);
         }
         else if (currentSkill.skillType == SkillData.SkillType.Single)
@@ -122,6 +124,7 @@ public class SkillPlayerController : MonoBehaviour
             currentSkillTransform.rotation = quaternion;
             currentSkillTransform.position = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z);
         }
+        attackDir.Set(value.x, 0, value.y);
     }
     bool isPressRollBtnSuccess;
     void Callback_OnRollBtnPress(bool isPress, ActionJoyStick button)

@@ -64,8 +64,6 @@ public class InputHandler : MonoBehaviour
     }
     void Callback_OnMovementStickChange(Vector2 pos)
     {
-        if (player.playerState == Player.PlayerState.Casting)
-            pos = Vector2.zero;
         if (OnMovementBtnDrag != null)
             OnMovementBtnDrag(pos);
     }

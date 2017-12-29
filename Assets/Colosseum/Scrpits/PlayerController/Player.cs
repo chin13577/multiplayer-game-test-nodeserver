@@ -40,9 +40,9 @@ public class Player : MonoBehaviour
     float runSpeed;
     float rollSpeed;
     float knockBackSpeed;
+    Vector2 currentMoveDir;
 
     CharacterController c_controller;
-    bool isCanMove = false;
     bool isGrounded
     {
         get
@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
         if (velocity.y <= 0 && isGrounded)
         {
             velocity.y = 0;
-            if (isCanMove && playerState != PlayerState.Hit)
+            if (playerState != PlayerState.Hit)
                 velocity.Set(transform.forward.x, velocity.y, transform.forward.z);
         }
         else
@@ -101,20 +101,23 @@ public class Player : MonoBehaviour
     }
 
     #endregion
-    private void Callback_OnJoyStickValueChange(Vector2 vect)
+    public void Callback_OnJoyStickValueChange(Vector2 vect)
     {
-        if (playerState != PlayerState.Idle && playerState != PlayerState.Rolling) return;
+        currentMoveDir = vect;
+        if (playerState != PlayerState.Idle && playerState != PlayerState.Rolling)
+        {
+            runSpeed = 0;
+            return;
+        }
         if (vect != Vector2.zero)
         {
             RotateCharacter(new Vector3(vect.x, 0, vect.y));
             animController.UpdateAnimation("Speed", 1);
-            isCanMove = true;
             runSpeed = 3;
         }
         else
         {
             animController.UpdateAnimation("Speed", 0);
-            isCanMove = false;
             runSpeed = 0;
         }
 
@@ -124,21 +127,37 @@ public class Player : MonoBehaviour
         Quaternion quaternion = Quaternion.LookRotation(dir);
         transform.rotation = quaternion;
     }
-    public void UseSkill(SkillFactory.SkillName skillName, Transform currentSkillTransform)
+    public void UseSkill(SkillData skillData, Transform currentSkillTransform, Vector3 attackDir)
     {
-        if (/*playerState == PlayerState.Rolling || */playerState == PlayerState.Hit) { return; }
-        //playerState = PlayerState.Casting;
+        if (playerState == PlayerState.Casting || playerState == PlayerState.Hit) { return; }
+        playerState = PlayerState.Casting;
+        animController.UpdateAnimation("Speed", 0);
+        runSpeed = 0;
+        RotateCharacter(attackDir);
         // cast anim
-        //animController.UpdateAnimation("Casting");
-        // Initial skill
-        GameObject g = SkillFactory.Instance.GetSkillObject(skillName);
+        animController.UpdateAnimation("Casting", skillData.skillName.ToString(), () =>
+        {
+            playerState = PlayerState.Idle;
+            Callback_OnJoyStickValueChange(currentMoveDir);
+            // Initial skill
+            SpawnSkill(skillData, currentSkillTransform);
+        });
+
+    }
+    /// <summary>
+    /// Spawn Skill
+    /// </summary>
+    /// <param name="skillData"></param>
+    /// <param name="currentSkillTransform"></param>
+    void SpawnSkill(SkillData skillData, Transform currentSkillTransform)
+    {
+        GameObject g = SkillFactory.Instance.GetSkillObject(skillData.skillName);
         if (g != null)
         {
             Skill obj = g.GetComponent<Skill>();
             obj.owner = this.name;
             obj.Action(currentSkillTransform);
         }
-
     }
     public void Roll()
     {

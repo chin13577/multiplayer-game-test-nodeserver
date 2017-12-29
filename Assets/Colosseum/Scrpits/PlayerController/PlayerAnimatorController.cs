@@ -1,12 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerAnimatorController : MonoBehaviour
 {
-
+    Action animCallback;
     public Animator anim;
-    public void UpdateAnimation(string name, object args = null)
+    public AnimatorOverrideController runtimeAnimator;
+    private void Start()
+    {
+        runtimeAnimator = Instantiate(runtimeAnimator);
+        anim.runtimeAnimatorController = runtimeAnimator;
+    }
+    public void UpdateAnimation(string name, object args = null, System.Action callback = null)
     {
         switch (name)
         {
@@ -20,8 +27,26 @@ public class PlayerAnimatorController : MonoBehaviour
                 anim.CrossFade("Rolling", 0.1f);
                 break;
             case "Casting":
-                anim.CrossFade("Casting", 0.1f);
+                SkillData skillData = SkillFactory.Instance.GetSkillData((string)args);
+                runtimeAnimator["Attack"] = skillData.GetAnimation();
+                runtimeAnimator["Attack"].AddEvent(new AnimationEvent()
+                {
+                    time = skillData.eventTime,
+                    functionName = "AnimationCallback",
+                    messageOptions = SendMessageOptions.DontRequireReceiver
+                   
+                });
+                animCallback = callback;
+                anim.CrossFade("Attack", 0.15f);
                 break;
+        }
+    }
+    void AnimationCallback()
+    {
+        if(animCallback!=null)
+        {
+            animCallback();
+            animCallback = null;
         }
     }
 }

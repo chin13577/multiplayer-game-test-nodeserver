@@ -49,4 +49,15 @@ public class SkillFactory : MonoBehaviour
         }
         return null;
     }
+    public SkillData GetSkillData(string skillName)
+    {
+        foreach (SkillData data in skills.skillList)
+        {
+            if (data.skillName.ToString() == skillName)
+            {
+                return data;
+            }
+        }
+        return null;
+    }
 }

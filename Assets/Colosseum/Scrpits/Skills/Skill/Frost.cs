@@ -8,6 +8,7 @@ public class Frost : Skill
     {
         transform.parent = null;
         transform.position = initTransform.position;
+        transform.localScale = new Vector3(skillData.size, transform.localScale.y, skillData.size) ;
         Quaternion quaternion = Quaternion.FromToRotation(transform.forward, initTransform.forward);
         transform.rotation = quaternion;
         StartCoroutine(Frezz( 6f));

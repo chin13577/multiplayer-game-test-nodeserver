@@ -1443,7 +1443,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 488428734}
-  - component: {fileID: 488428733}
   m_Layer: 0
   m_Name: SD_QUERY_27
   m_TagString: Untagged
@@ -1451,24 +1450,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &488428733
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 95929645405078784, guid: 4f977b7d123e06549b973df876b9cbb6,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 488428732}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: b41e7c84cb57dc8419ba6ed952ac8044, type: 3}
-  m_Controller: {fileID: 9100000, guid: 21ff620b47444dd498a3007dca42af58, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!4 &488428734
 Transform:
   m_ObjectHideFlags: 0
@@ -2790,6 +2771,7 @@ GameObject:
   - component: {fileID: 824747029}
   - component: {fileID: 824747032}
   - component: {fileID: 824747033}
+  - component: {fileID: 824747034}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2851,19 +2833,28 @@ MonoBehaviour:
   skill:
   - skillType: 0
     skillName: 0
+    size: 0
     distance: 0
     isSelectArea: 0
     coolDown: 0
+    eventTime: 0
+    castAnim: {fileID: 0}
   - skillType: 0
     skillName: 1
+    size: 0
     distance: 0
     isSelectArea: 0
     coolDown: 0
+    eventTime: 0
+    castAnim: {fileID: 0}
   - skillType: 0
     skillName: 2
+    size: 0
     distance: 0
     isSelectArea: 0
     coolDown: 0
+    eventTime: 0
+    castAnim: {fileID: 0}
 --- !u!114 &824747032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2875,7 +2866,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e29127540e032784abbf4148ad25b0ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 1875772707}
+  anim: {fileID: 824747034}
+  runtimeAnimator: {fileID: 22100000, guid: f40a4bd277cdf7640b7ae86bb12b7644, type: 2}
 --- !u!114 &824747033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2890,6 +2882,23 @@ MonoBehaviour:
   isSyncPosition: 1
   isSyncRotation: 1
   isSyncScale: 0
+--- !u!95 &824747034
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 824747028}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: b41e7c84cb57dc8419ba6ed952ac8044, type: 3}
+  m_Controller: {fileID: 9100000, guid: 21ff620b47444dd498a3007dca42af58, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &825798682
 GameObject:
   m_ObjectHideFlags: 0
@@ -3410,6 +3419,7 @@ GameObject:
   - component: {fileID: 996783725}
   - component: {fileID: 996783724}
   - component: {fileID: 996783729}
+  - component: {fileID: 996783730}
   m_Layer: 0
   m_Name: Player (1)
   m_TagString: Player
@@ -3442,7 +3452,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e29127540e032784abbf4148ad25b0ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 488428733}
+  anim: {fileID: 996783730}
+  runtimeAnimator: {fileID: 22100000, guid: f40a4bd277cdf7640b7ae86bb12b7644, type: 2}
 --- !u!143 &996783726
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3514,6 +3525,23 @@ MonoBehaviour:
   atkSpawnPoint: {fileID: 1417968353}
   isLocalPlayer: 0
   skill: []
+--- !u!95 &996783730
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 996783723}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: b41e7c84cb57dc8419ba6ed952ac8044, type: 3}
+  m_Controller: {fileID: 9100000, guid: 21ff620b47444dd498a3007dca42af58, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &998584810
 GameObject:
   m_ObjectHideFlags: 0
@@ -5944,7 +5972,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1875772706}
-  - component: {fileID: 1875772707}
   m_Layer: 0
   m_Name: SD_QUERY_27
   m_TagString: Untagged
@@ -5968,24 +5995,6 @@ Transform:
   m_Father: {fileID: 824747030}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1875772707
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 95929645405078784, guid: 4f977b7d123e06549b973df876b9cbb6,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1875772705}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: b41e7c84cb57dc8419ba6ed952ac8044, type: 3}
-  m_Controller: {fileID: 9100000, guid: 21ff620b47444dd498a3007dca42af58, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &1905167136
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,16 +14,25 @@ MonoBehaviour:
   skillList:
   - skillType: 1
     skillName: 0
+    size: 1
     distance: 3.5
     isSelectArea: 0
     coolDown: 1.2
+    eventTime: 0.86
+    castAnim: {fileID: 7400000, guid: 8811d53408fdb2c49b9e2c2dadd43aa2, type: 2}
   - skillType: 1
     skillName: 1
+    size: 1
     distance: 5
     isSelectArea: 0
     coolDown: 4
+    eventTime: 0.86
+    castAnim: {fileID: 7400000, guid: 8811d53408fdb2c49b9e2c2dadd43aa2, type: 2}
   - skillType: 2
     skillName: 2
+    size: 1.5
     distance: 3.5
     isSelectArea: 0
     coolDown: 5
+    eventTime: 0.86
+    castAnim: {fileID: 7400000, guid: 8811d53408fdb2c49b9e2c2dadd43aa2, type: 2}

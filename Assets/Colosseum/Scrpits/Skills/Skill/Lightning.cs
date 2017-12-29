@@ -7,8 +7,8 @@ public class Lightning : Skill
     public override void Action(Transform initTransform)
     {
         transform.position = initTransform.position;
-        Quaternion quaternion = Quaternion.FromToRotation(transform.forward, initTransform.forward);
-        transform.rotation = quaternion;
+        //Quaternion quaternion = Quaternion.FromToRotation(transform.forward, initTransform.forward);
+        transform.rotation = initTransform.rotation;
         StartCoroutine(Duration(0.5f));
     }
 
