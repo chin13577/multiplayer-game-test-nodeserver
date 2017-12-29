@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,8 @@ public class SkillPlayerController : MonoBehaviour
     SkillData currentSkill;
     Player player;
 
+    bool isCancelSkill;
+
     IEnumerator actionCo;
     void Awake()
     {
@@ -24,16 +27,20 @@ public class SkillPlayerController : MonoBehaviour
     private void OnEnable()
     {
         Player.OnPlayerCreated += OnPlayerCreated;
-        InputHandler.instance.OnSkillBtnPress += Callback_OnSkillBtnPress;
-        InputHandler.instance.OnActionBtnDrag += Callback_OnSkillBtnDrag;
+        InputHandler.OnSkillBtnPress += Callback_OnSkillBtnPress;
+        InputHandler.OnActionBtnDrag += Callback_OnSkillBtnDrag;
         InputHandler.instance.rollBtn.OnPress += Callback_OnRollBtnPress;
+        CancelButton.OnCancelSkill += Callback_OnCancelSkill;
     }
+
+
     private void OnDisable()
     {
         Player.OnPlayerCreated -= OnPlayerCreated;
-        InputHandler.instance.OnSkillBtnPress -= Callback_OnSkillBtnPress;
-        InputHandler.instance.OnActionBtnDrag -= Callback_OnSkillBtnDrag;
+        InputHandler.OnSkillBtnPress -= Callback_OnSkillBtnPress;
+        InputHandler.OnActionBtnDrag -= Callback_OnSkillBtnDrag;
         InputHandler.instance.rollBtn.OnPress -= Callback_OnRollBtnPress;
+        CancelButton.OnCancelSkill -= Callback_OnCancelSkill;
     }
     void OnPlayerCreated(Player playerController)
     {
@@ -42,20 +49,33 @@ public class SkillPlayerController : MonoBehaviour
             player = playerController;
         }
     }
-    void Callback_OnSkillBtnPress(bool isPress,int buttonIndex)
+    private void Callback_OnCancelSkill(bool isCancel)
     {
-        if (buttonIndex == -1) return;
+        isCancelSkill = isCancel;
+    }
+    void Callback_OnSkillBtnPress(bool isPress,ActionJoyStick button)
+    {
+        if (button.isCooldown==true) return;
+        if (button.buttonIndex == -1) return;
+        //if (player.playerState == Player.PlayerState.Rolling) return;
+
         if (isPress)
         {
-            currentSkill = player.skill[buttonIndex];
+            currentSkill = player.skill[button.buttonIndex];
             ShowSkillGuide(currentSkill);
-            
         }
         else
         {
-            player.UseSkill(currentSkill.skillName, currentSkillTransform);
+            if (currentSkill == null) return;
+            if (isCancelSkill == false)
+            {
+                player.UseSkill(currentSkill.skillName, currentSkillTransform);
+                //cooldown
+                button.SetCoolDown(currentSkill.coolDown);
+            }
             //reset
             HideSkillGuide();
+            
         }
     }
     void ShowSkillGuide(SkillData skill)
@@ -103,8 +123,9 @@ public class SkillPlayerController : MonoBehaviour
             currentSkillTransform.position = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z);
         }
     }
-    void Callback_OnRollBtnPress(bool isPress)
+    void Callback_OnRollBtnPress(bool isPress, ActionJoyStick button)
     {
+        if (button.isCooldown) return;
         if (isPress)
         {
             // show trails
@@ -112,7 +133,11 @@ public class SkillPlayerController : MonoBehaviour
         else
         {
             //Roll
-            player.Roll();
+            if (isCancelSkill == false)
+            {
+                player.Roll();
+                InputHandler.instance.rollBtn.SetCoolDown(0.5f);
+            }
         }
     }
     IEnumerator UpdateMagicRingTransform()

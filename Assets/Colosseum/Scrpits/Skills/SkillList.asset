@@ -16,11 +16,14 @@ MonoBehaviour:
     skillName: 0
     distance: 3.5
     isSelectArea: 0
+    coolDown: 1.2
   - skillType: 1
     skillName: 1
-    distance: 3.5
+    distance: 5
     isSelectArea: 0
+    coolDown: 4
   - skillType: 2
     skillName: 2
     distance: 3.5
     isSelectArea: 0
+    coolDown: 5

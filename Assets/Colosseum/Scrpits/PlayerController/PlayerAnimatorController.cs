@@ -17,7 +17,10 @@ public class PlayerAnimatorController : MonoBehaviour
                 anim.SetTrigger("IsHit");
                 break;
             case "IsRolling":
-                anim.SetTrigger("IsRolling");
+                anim.CrossFade("Rolling", 0.1f);
+                break;
+            case "Casting":
+                anim.CrossFade("Casting", 0.1f);
                 break;
         }
     }

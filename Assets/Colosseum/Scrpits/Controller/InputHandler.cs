@@ -5,15 +5,17 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    public Action<Vector2> OnMovementBtnDrag;
-    public Action<Vector2> OnActionBtnDrag;
-    public Action<bool,int> OnSkillBtnPress;
+    public static event Action<Vector2> OnMovementBtnDrag;
+    public static event Action<Vector2> OnActionBtnDrag;
+    public static event Action<bool, ActionJoyStick> OnSkillBtnPress;
+    public static event Action<bool, ActionJoyStick> OnRollBtnPress;
     public NormalActionButton rollBtn;
     public MovementJoyStick movementStick;
     public ActionJoyStick[] actionStick;
 
     private ActionJoyStick selectedSkillBtn;
     public static InputHandler _instance = null;
+
     public static InputHandler instance
     {
         get
@@ -25,6 +27,7 @@ public class InputHandler : MonoBehaviour
             return _instance;
         }
     }
+    Player player;
     //Awake is always called before any Start functions
     void Awake()
     {
@@ -37,22 +40,32 @@ public class InputHandler : MonoBehaviour
     {
         Player.OnPlayerCreated += OnPlayerCreated;
         movementStick.OnValueChange += Callback_OnMovementStickChange;
+        rollBtn.OnPress += Callback_OnRollBtnPress;
     }
+
     private void OnDisable()
     {
         Player.OnPlayerCreated -= OnPlayerCreated;
         movementStick.OnValueChange -= Callback_OnMovementStickChange;
+        rollBtn.OnPress -= Callback_OnRollBtnPress;
     }
+    private void Callback_OnRollBtnPress(bool press, ActionJoyStick button)
+    {
+        if (OnRollBtnPress != null)
+            OnRollBtnPress(press, button);
+    }
+
     void OnPlayerCreated(Player playerController)
     {
         if (playerController.isLocalPlayer)
         {
-            //skillJoyStick[0].isSelectArea = playerController.skill[0].isSelectArea;
-            //skillJoyStick[1].isSelectArea = playerController.skill[1].isSelectArea;
+            this.player = playerController;
         }
     }
     void Callback_OnMovementStickChange(Vector2 pos)
     {
+        if (player.playerState == Player.PlayerState.Casting)
+            pos = Vector2.zero;
         if (OnMovementBtnDrag != null)
             OnMovementBtnDrag(pos);
     }
@@ -62,10 +75,10 @@ public class InputHandler : MonoBehaviour
             selectedSkillBtn = button;
         else
             selectedSkillBtn = null;
-
         UpdateActivateSkillButton(isPress);
         if (OnSkillBtnPress != null)
-            OnSkillBtnPress(isPress,button.buttonIndex);
+            OnSkillBtnPress(isPress, button);
+        ActionBtnDrag(ref button.pos);
     }
     public void ActionBtnDrag(ref Vector2 value)
     {

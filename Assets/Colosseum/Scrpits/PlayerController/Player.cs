@@ -6,8 +6,26 @@ using System;
 
 public class Player : MonoBehaviour
 {
+    public enum PlayerState { Idle, Rolling, Casting, Hit }
+    [SerializeField] private PlayerState _playerState = PlayerState.Idle;
+    public PlayerState playerState
+    {
+        get
+        {
+            return _playerState;
+        }
+        set
+        {
+            _playerState = value;
+            if (OnUpdatePlayerState != null)
+                OnUpdatePlayerState(value);
+        }
+    }
+
     public delegate void onPlayerCreated(Player playerController);
     public static event onPlayerCreated OnPlayerCreated;
+    public Action<PlayerState> OnUpdatePlayerState;
+
     InputHandler controller;
     public PlayerAnimatorController animController;
     public LayerMask layer;
@@ -32,8 +50,6 @@ public class Player : MonoBehaviour
             return Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, 0.3f, layer);
         }
     }
-    bool isRolling;
-    bool isKnockback;
 
     #endregion
     #region Unity Callback
@@ -46,6 +62,7 @@ public class Player : MonoBehaviour
         c_controller = GetComponent<CharacterController>();
         velocity.Set(transform.forward.x, velocity.y, transform.forward.z);
         controller = InputHandler.instance;
+        // mork up
         for (int i = 0; i < skill.Length; i++)
         {
             skill[i] = SkillFactory.Instance.GetSkillData(skill[i].skillName);
@@ -55,13 +72,13 @@ public class Player : MonoBehaviour
     {
         if (isLocalPlayer == false)
             return;
-        controller.OnMovementBtnDrag += Callback_OnJoyStickValueChange;
+        InputHandler.OnMovementBtnDrag += Callback_OnJoyStickValueChange;
     }
     private void OnDisable()
     {
         if (isLocalPlayer == false)
             return;
-        controller.OnMovementBtnDrag -= Callback_OnJoyStickValueChange;
+        InputHandler.OnMovementBtnDrag -= Callback_OnJoyStickValueChange;
     }
     private void Start()
     {
@@ -75,19 +92,18 @@ public class Player : MonoBehaviour
         if (velocity.y <= 0 && isGrounded)
         {
             velocity.y = 0;
-            if (isCanMove && !isKnockback)
+            if (isCanMove && playerState != PlayerState.Hit)
                 velocity.Set(transform.forward.x, velocity.y, transform.forward.z);
         }
         else
             velocity = velocity + Physics.gravity * Time.deltaTime;
-
         c_controller.Move(velocity * Time.deltaTime * speed);
-
     }
 
     #endregion
     private void Callback_OnJoyStickValueChange(Vector2 vect)
     {
+        if (playerState != PlayerState.Idle && playerState != PlayerState.Rolling) return;
         if (vect != Vector2.zero)
         {
             RotateCharacter(new Vector3(vect.x, 0, vect.y));
@@ -108,9 +124,12 @@ public class Player : MonoBehaviour
         Quaternion quaternion = Quaternion.LookRotation(dir);
         transform.rotation = quaternion;
     }
-    public void UseSkill(SkillFactory.SkillName skillName,Transform currentSkillTransform)
+    public void UseSkill(SkillFactory.SkillName skillName, Transform currentSkillTransform)
     {
-        if (isRolling || isKnockback) { return; }
+        if (/*playerState == PlayerState.Rolling || */playerState == PlayerState.Hit) { return; }
+        //playerState = PlayerState.Casting;
+        // cast anim
+        //animController.UpdateAnimation("Casting");
         // Initial skill
         GameObject g = SkillFactory.Instance.GetSkillObject(skillName);
         if (g != null)
@@ -119,26 +138,25 @@ public class Player : MonoBehaviour
             obj.owner = this.name;
             obj.Action(currentSkillTransform);
         }
-        // cast anim
 
     }
     public void Roll()
     {
-        if (isRolling || isKnockback) { return; }
-        isRolling = true;
+        if (playerState == PlayerState.Hit) { return; }
+        playerState = PlayerState.Rolling;
         animController.UpdateAnimation("IsRolling");
-        DOTween.To((x) => rollSpeed = x, 10, 0, 0.5f).OnComplete(() => isRolling = false);
+        DOTween.To((x) => rollSpeed = x, 10, 0, 0.45f).OnComplete(() => playerState = PlayerState.Idle);
     }
     Tween knockbackTween;
     public void Knockback(Vector3 dir)
     {
-        if (isRolling) { return; }
-        isKnockback = true;
+        if (playerState == PlayerState.Rolling) { return; }
+        playerState = PlayerState.Hit;
         animController.UpdateAnimation("IsHit");
         velocity.Set(dir.x, velocity.y, dir.z);
         if (knockbackTween != null)
             knockbackTween.Kill();
-        knockbackTween = DOTween.To((x) => knockBackSpeed = x, 10, 0, 0.5f).OnComplete(() => isKnockback = false);
+        knockbackTween = DOTween.To((x) => knockBackSpeed = x, 10, 0, 0.5f).OnComplete(() => playerState = PlayerState.Idle);
     }
 
 

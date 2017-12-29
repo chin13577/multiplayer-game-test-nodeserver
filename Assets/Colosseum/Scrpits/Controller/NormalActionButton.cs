@@ -6,10 +6,10 @@ using System;
 
 public class NormalActionButton : ActionJoyStick, IPointerDownHandler , IPointerUpHandler
 {
-    public Action<bool> OnPress;
+    public event Action<bool, ActionJoyStick> OnPress;
     void Awake()
     {
-        isActivate = true;
+        base.Initial();
     }
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -17,7 +17,7 @@ public class NormalActionButton : ActionJoyStick, IPointerDownHandler , IPointer
             return;
         InputHandler.instance.ActionBtnPress(true, this);
         if (OnPress != null)
-            OnPress(true);
+            OnPress(true,this);
     }
     public void OnPointerUp(PointerEventData eventData)
     {
@@ -25,6 +25,6 @@ public class NormalActionButton : ActionJoyStick, IPointerDownHandler , IPointer
             return;
         InputHandler.instance.ActionBtnPress(false, this);
         if (OnPress != null)
-            OnPress(false);
+            OnPress(false,this);
     }
 }

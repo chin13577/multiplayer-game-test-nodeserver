@@ -15,14 +15,12 @@ public class SkillJoyStick : ActionJoyStick, IPointerDownHandler, IDragHandler, 
     public RectTransform stickImage;
     public RectTransform border;
 
-    Vector2 pos;
 
      void Awake()
     {
-        Initial();
+        Initialize();
     }
-
-    void Initial()
+    void Initialize()
     {
         canvasGroup.alpha = 0;
         if (isSelectArea == false)

@@ -10,6 +10,7 @@ public class SkillData
     public SkillFactory.SkillName skillName;
     public float distance;
     public bool isSelectArea;
+    public float coolDown;
     public SkillData(SkillType type)
     {
         this.skillType = type;
