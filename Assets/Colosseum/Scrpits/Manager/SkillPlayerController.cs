@@ -53,9 +53,9 @@ public class SkillPlayerController : MonoBehaviour
     {
         isCancelSkill = isCancel;
     }
-    void Callback_OnSkillBtnPress(bool isPress,ActionJoyStick button)
+    void Callback_OnSkillBtnPress(bool isPress, ActionJoyStick button)
     {
-        if (button.isCooldown==true) return;
+        if (button.isCooldown == true) return;
         if (button.buttonIndex == -1) return;
         //if (player.playerState == Player.PlayerState.Rolling) return;
 
@@ -75,7 +75,7 @@ public class SkillPlayerController : MonoBehaviour
             }
             //reset
             HideSkillGuide();
-            
+
         }
     }
     void ShowSkillGuide(SkillData skill)
@@ -123,21 +123,24 @@ public class SkillPlayerController : MonoBehaviour
             currentSkillTransform.position = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z);
         }
     }
+    bool isPressRollBtnSuccess;
     void Callback_OnRollBtnPress(bool isPress, ActionJoyStick button)
     {
         if (button.isCooldown) return;
         if (isPress)
         {
-            // show trails
+            isPressRollBtnSuccess = true;
         }
         else
         {
+            if (isPressRollBtnSuccess == false) return;
             //Roll
             if (isCancelSkill == false)
             {
                 player.Roll();
                 InputHandler.instance.rollBtn.SetCoolDown(0.5f);
             }
+            isPressRollBtnSuccess = false;
         }
     }
     IEnumerator UpdateMagicRingTransform()
