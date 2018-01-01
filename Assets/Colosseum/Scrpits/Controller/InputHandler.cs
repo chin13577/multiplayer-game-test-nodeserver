@@ -57,7 +57,7 @@ public class InputHandler : MonoBehaviour
 
     void OnPlayerCreated(Player playerController)
     {
-        if (playerController.isLocalPlayer)
+        if (playerController.isLocal)
         {
             this.player = playerController;
         }

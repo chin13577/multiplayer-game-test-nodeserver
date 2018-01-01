@@ -44,7 +44,7 @@ public class SkillPlayerController : MonoBehaviour
     }
     void OnPlayerCreated(Player playerController)
     {
-        if (playerController.isLocalPlayer)
+        if (playerController.isLocal)
         {
             player = playerController;
         }
@@ -57,7 +57,8 @@ public class SkillPlayerController : MonoBehaviour
     {
         if (button.isCooldown == true) return;
         if (button.buttonIndex == -1) return;
-        if (player.playerState == Player.PlayerState.Casting) return;
+        if (player.playerState == Player.PlayerState.Casting || player.playerState == Player.PlayerState.Casting ||
+            player.playerState == Player.PlayerState.Hit) { return; }
         //if (player.playerState == Player.PlayerState.Rolling) return;
 
         if (isPress)

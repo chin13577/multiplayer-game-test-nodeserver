@@ -2864,13 +2864,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0805c0929bf3847a3bf8d45f1a921c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLocal: 1
   _playerState: 0
   animController: {fileID: 824747032}
   layer:
     serializedVersion: 2
     m_Bits: 4294967295
   atkSpawnPoint: {fileID: 1943477912}
-  isLocalPlayer: 1
   skill:
   - skillType: 0
     skillName: 0
@@ -2920,6 +2920,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42e46c3fe3ef98b4f9377271e4364ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLocal: 0
   isSyncPosition: 1
   isSyncRotation: 1
   isSyncScale: 0
@@ -3467,7 +3468,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &996783724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3479,6 +3480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42e46c3fe3ef98b4f9377271e4364ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLocal: 0
   isSyncPosition: 1
   isSyncRotation: 1
   isSyncScale: 0
@@ -3523,13 +3525,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0805c0929bf3847a3bf8d45f1a921c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLocal: 0
   _playerState: 0
   animController: {fileID: 996783725}
   layer:
     serializedVersion: 2
     m_Bits: 4294967295
   atkSpawnPoint: {fileID: 1417968353}
-  isLocalPlayer: 0
   skill: []
 --- !u!4 &996783728
 Transform:
@@ -3558,13 +3560,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0805c0929bf3847a3bf8d45f1a921c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLocal: 0
   _playerState: 0
   animController: {fileID: 996783725}
   layer:
     serializedVersion: 2
     m_Bits: 0
   atkSpawnPoint: {fileID: 1417968353}
-  isLocalPlayer: 0
   skill: []
 --- !u!95 &996783730
 Animator:

@@ -24,7 +24,15 @@ public class PlayerAnimatorController : MonoBehaviour
                 anim.SetTrigger("IsHit");
                 break;
             case "IsRolling":
-                anim.CrossFade("Rolling", 0.1f);
+                runtimeAnimator["Rolling"].AddEvent(new AnimationEvent()
+                {
+                    time = (float)args,
+                    functionName = "AnimationCallback",
+                    messageOptions = SendMessageOptions.DontRequireReceiver
+
+                });
+                animCallback = callback;
+                anim.Play("Rolling", 0, 0);
                 break;
             case "Casting":
                 SkillData skillData = SkillFactory.Instance.GetSkillData((string)args);
@@ -34,16 +42,16 @@ public class PlayerAnimatorController : MonoBehaviour
                     time = skillData.eventTime,
                     functionName = "AnimationCallback",
                     messageOptions = SendMessageOptions.DontRequireReceiver
-                   
+
                 });
                 animCallback = callback;
-                anim.CrossFade("Attack", 0.15f);
+                anim.Play("Attack",0,0);
                 break;
         }
     }
     void AnimationCallback()
     {
-        if(animCallback!=null)
+        if (animCallback != null)
         {
             animCallback();
             animCallback = null;

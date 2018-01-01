@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 
-public class Player : MonoBehaviour
+public class Player : WSNetworking
 {
     public enum PlayerState { Idle, Rolling, Casting, Hit }
     [SerializeField] private PlayerState _playerState = PlayerState.Idle;
@@ -31,7 +31,6 @@ public class Player : MonoBehaviour
     public LayerMask layer;
     public Transform atkSpawnPoint;
     #region Variables
-    public bool isLocalPlayer;
     public SkillData[] skill;
     Vector3 direction;
     Vector3 velocity;
@@ -70,19 +69,19 @@ public class Player : MonoBehaviour
     }
     private void OnEnable()
     {
-        if (isLocalPlayer == false)
+        if (isLocal == false)
             return;
         InputHandler.OnMovementBtnDrag += Callback_OnJoyStickValueChange;
     }
     private void OnDisable()
     {
-        if (isLocalPlayer == false)
+        if (isLocal == false)
             return;
         InputHandler.OnMovementBtnDrag -= Callback_OnJoyStickValueChange;
     }
     private void Start()
     {
-        if (isLocalPlayer && OnPlayerCreated != null)
+        if (isLocal && OnPlayerCreated != null)
         {
             OnPlayerCreated(this);
         }
@@ -120,7 +119,8 @@ public class Player : MonoBehaviour
             animController.UpdateAnimation("Speed", 0);
             runSpeed = 0;
         }
-
+        if (playerState == PlayerState.Rolling)
+            runSpeed = 0;
     }
     void RotateCharacter(Vector3 dir)
     {
@@ -129,10 +129,10 @@ public class Player : MonoBehaviour
     }
     public void UseSkill(SkillData skillData, Transform currentSkillTransform, Vector3 attackDir)
     {
-        if (playerState == PlayerState.Casting || playerState == PlayerState.Hit) { return; }
         playerState = PlayerState.Casting;
         animController.UpdateAnimation("Speed", 0);
         runSpeed = 0;
+        rollSpeed = 0;
         RotateCharacter(attackDir);
         // cast anim
         animController.UpdateAnimation("Casting", skillData.skillName.ToString(), () =>
@@ -163,8 +163,15 @@ public class Player : MonoBehaviour
     {
         if (playerState == PlayerState.Hit) { return; }
         playerState = PlayerState.Rolling;
-        animController.UpdateAnimation("IsRolling");
-        DOTween.To((x) => rollSpeed = x, 10, 0, 0.45f).OnComplete(() => playerState = PlayerState.Idle);
+        runSpeed = 0;
+        rollSpeed = 6;
+        animController.UpdateAnimation("IsRolling", 0.3f, () =>
+        {
+            rollSpeed = 0;
+            playerState = PlayerState.Idle;
+            Callback_OnJoyStickValueChange(currentMoveDir);
+        });
+        //DOTween.To((x) => rollSpeed = x, 10, 0, 0.45f).OnComplete(() => playerState = PlayerState.Idle);
     }
     Tween knockbackTween;
     public void Knockback(Vector3 dir)
