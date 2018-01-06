@@ -2,9 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class User : MonoBehaviour {
+public class User : MonoBehaviour
+{
     public static User instance;
 
-    public string name;
-    public string room;
+    UserDataJson data;
+
+    void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+        DontDestroyOnLoad(gameObject);
+    }
+    private void Initialize()
+    {
+        data = new UserDataJson();
+    }
+    public UserDataJson GetPlayerData()
+    {
+        return this.data;
+    }
+    public void SetPlayerData(UserDataJson p)
+    {
+        this.data = p;
+    }
+
 }

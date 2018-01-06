@@ -6,5 +6,5 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Colosseum/Scenes/GamePlay.unity
-    guid: 8c98b9e806ef58c4ebe0007d432b7755
+    path: Assets/Colosseum/Scenes/Login.unity
+    guid: 59327cafc0c6f0643bdce6ceccc08722

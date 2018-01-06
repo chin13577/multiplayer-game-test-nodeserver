@@ -5,9 +5,10 @@ var socketIO = require('./config/socketIO');
 
 var db = mongoose();
 var app = express();
-var io = socketIO();
+var io = socketIO(app);
 io.attach(4567);
 app.listen(3000);
 module.exports = app;
 
 console.log('Server running at http://localhost:3000');
+
