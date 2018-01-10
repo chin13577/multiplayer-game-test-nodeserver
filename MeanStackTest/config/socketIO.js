@@ -4,15 +4,8 @@ var shortId = require('shortId');
 var Enum = require('enum');
 var userStatus = new Enum(['Lobby', 'Waiting', 'Played']);
 
-var roomList = {
-    rooms: {}
-};
-var player={
-    name:'',
-    hp:100,
-    position:[0,0,0],
-    rotation:[0,0,0]
-}
+var roomList = {};
+
 module.exports = function (app) {
     var server = require('http').Server(app);
 
@@ -44,8 +37,17 @@ module.exports = function (app) {
             });
         });
 
-        socket.on('OnPlay',()=>{
-
+        socket.on('OnPlay',(data)=>{
+            if(roomList[socket.room].players===null){
+                var player={
+                    name:'',
+                    hp:100,
+                    position:[0,0,0],
+                    rotation:[0,0,0]
+                }
+                roomList[socket.room].players =[];
+                roomList[socket.room].players.push();
+            }
         });
 
         socket.on('Test', () => {
@@ -69,38 +71,39 @@ module.exports = function (app) {
 }
 
 function AddUserInRoom(socket, roomName, user) {
-    if (!roomList.rooms[roomName]) {
+    if (!roomList[roomName]) {
         // check room is undefine so create room.
-        roomList.rooms[roomName] = [];
-        roomList.rooms[roomName].push(user);
+        roomList[roomName]={};
+        roomList[roomName].users = [];
+        roomList[roomName].users.push(user);
         let roomData = GetRoomData();
         io.to("lobby").emit("OnRoomCreated", { roomData });
     } else {
         // else check if user isn't exist.
-        let index = roomList.rooms[roomName].indexOf(user);
+        let index = roomList[roomName].users.indexOf(user);
         if (index === -1) {
-            roomList.rooms[roomName].push(user);
-            let userInRoom = roomList.rooms[roomName];
+            roomList[roomName].users.push(user);
+            let userInRoom = roomList[roomName].users;
             socket.broadcast.to(roomName).emit("OnJoinRoom", {userInRoom});
         }
     }
 }
 function RemoveUserInRoom(roomName, user) {
-    let index = roomList.rooms[roomName].indexOf(user);
+    let index = roomList[roomName].users.indexOf(user);
     if (index !== -1) {
-        roomList.rooms[roomName].splice(index, 1);
-        if(roomList.rooms[roomName].length===0){
-            delete roomList.rooms[roomName];
+        roomList[roomName].users.splice(index, 1);
+        if(roomList[roomName].users.length===0){
+            delete roomList[roomName];
         }
     }
 }
 function GetRoomData() {
     let data = [];
-    let roomNames = Object.getOwnPropertyNames(roomList.rooms);
+    let roomNames = Object.getOwnPropertyNames(roomList);
     for (i = 0; i < roomNames.length; i++) {
         data.push({
             name: roomNames[i],
-            length: roomList.rooms[roomNames[i]].length
+            length: roomList[roomNames[i]].users.length
         });
     }
     return data;

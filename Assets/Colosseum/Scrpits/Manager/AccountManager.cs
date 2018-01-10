@@ -17,10 +17,22 @@ public class AccountManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        var notificationPayload = new
+        {
+            notification = new
+            {
+                title = "Title",
+                body = "body"
+            }
+        };
+        string json = JsonConvert.SerializeObject(notificationPayload);
+        var notificationPayload1 = new { name = new {c="" } };
+
+        print(json);
         socket.On("open", TestOpen);
         socket.On("error", TestError);
         socket.On("close", TestClose);
-        socket.On("OnJoinRoom", OnJoinLobby);
+        socket.On("OnJoinRoom", OnJoinRoom);
         //socket.On("OnLeaveRoom", OnJoinLobby);
         socket.On("OnRoomCreated", (e) =>
         {
@@ -33,22 +45,12 @@ public class AccountManager : MonoBehaviour
             Debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
         });
     }
-
-    public void OnLoginButtonClick()
+    
+    public void JoinRoomButtonClick(string room)
     {
         UserDataJson p = new UserDataJson();
         p.name = nameField.text;
-        p.room = "lobby";
-        User.instance.SetPlayerData(p);
-        print(User.instance.GetPlayerData().ToJson());
-        socket.Emit("OnJoinRoom", new JSONObject(User.instance.GetPlayerData().ToJson()));
-
-    }
-    public void JoinRoomButtonClick()
-    {
-        UserDataJson p = new UserDataJson();
-        p.name = nameField.text;
-        p.room = "1";
+        p.room = room;
         User.instance.SetPlayerData(p);
         print(User.instance.GetPlayerData().ToJson());
         socket.Emit("OnJoinRoom", new JSONObject(User.instance.GetPlayerData().ToJson()));
@@ -63,7 +65,7 @@ public class AccountManager : MonoBehaviour
         }
     }
     //TODO : join to lobby
-    public void OnJoinLobby(SocketIOEvent e)
+    public void OnJoinRoom(SocketIOEvent e)
     {
         Debug.Log(e.data + "");
         Debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
