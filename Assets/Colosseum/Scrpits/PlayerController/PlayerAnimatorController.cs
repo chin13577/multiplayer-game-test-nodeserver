@@ -5,20 +5,23 @@ using System;
 
 public class PlayerAnimatorController : MonoBehaviour
 {
-    Action animCallback;
     public Animator anim;
     public AnimatorOverrideController runtimeAnimator;
+
+    WSGameManager manager;
+    Action animCallback;
     private void Start()
     {
         runtimeAnimator = Instantiate(runtimeAnimator);
         anim.runtimeAnimatorController = runtimeAnimator;
+        manager = GameObject.FindObjectOfType<WSGameManager>();
     }
     public void UpdateAnimation(string name, object args = null, System.Action callback = null)
     {
         switch (name)
         {
             case "Speed":
-                anim.SetFloat("Speed", (int)args);
+                anim.SetFloat("Speed", Convert.ToInt32(args));
                 break;
             case "IsHit":
                 anim.SetTrigger("IsHit");
@@ -26,7 +29,7 @@ public class PlayerAnimatorController : MonoBehaviour
             case "IsRolling":
                 runtimeAnimator["Rolling"].AddEvent(new AnimationEvent()
                 {
-                    time = (float)args,
+                    time = Convert.ToSingle(args),
                     functionName = "AnimationCallback",
                     messageOptions = SendMessageOptions.DontRequireReceiver
 
@@ -48,6 +51,13 @@ public class PlayerAnimatorController : MonoBehaviour
                 anim.Play("Attack",0,0);
                 break;
         }
+    }
+    public void SendAnimToServer(string name, object args = null)
+    {
+        AnimationJson animJson = new AnimationJson();
+        animJson.name = name;
+        animJson.args = args;
+        manager.SendAnimation(animJson);
     }
     void AnimationCallback()
     {

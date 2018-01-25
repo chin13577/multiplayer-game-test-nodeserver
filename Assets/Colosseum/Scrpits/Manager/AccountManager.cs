@@ -5,6 +5,7 @@ using SocketIO;
 using System;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using UnityEngine.SceneManagement;
 
 public class AccountManager : MonoBehaviour
 {
@@ -17,18 +18,6 @@ public class AccountManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        var notificationPayload = new
-        {
-            notification = new
-            {
-                title = "Title",
-                body = "body"
-            }
-        };
-        string json = JsonConvert.SerializeObject(notificationPayload);
-        var notificationPayload1 = new { name = new {c="" } };
-
-        print(json);
         socket.On("open", TestOpen);
         socket.On("error", TestError);
         socket.On("close", TestClose);
@@ -44,6 +33,11 @@ public class AccountManager : MonoBehaviour
         socket.On("OnLeaveRoom", (e) => {
             Debug.Log("[SocketIO] Open received: " + e.name + " " + e.data);
         });
+        socket.On("OnStart", (e) =>
+        {
+            string scene = e.data["data"].str;
+            SceneManager.LoadScene(scene);
+        });
     }
     
     public void JoinRoomButtonClick(string room)
@@ -52,9 +46,16 @@ public class AccountManager : MonoBehaviour
         p.name = nameField.text;
         p.room = room;
         User.instance.SetPlayerData(p);
-        print(User.instance.GetPlayerData().ToJson());
-        socket.Emit("OnJoinRoom", new JSONObject(User.instance.GetPlayerData().ToJson()));
+        print("Send : "+User.instance.GetPlayerData().ToJson());
+        socket.Emit("JoinRoom", new JSONObject(User.instance.GetPlayerData().ToJson()));
 
+    }
+    public void PlayBtnClick()
+    {
+        string scene = "Stage1";
+        
+        socket.Emit("Start", new JSONObject(JsonConvert.SerializeObject(scene)));
+        SceneManager.LoadScene(scene);
     }
     private void Update()
     {

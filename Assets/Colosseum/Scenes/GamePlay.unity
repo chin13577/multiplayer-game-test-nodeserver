@@ -220,7 +220,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &81301684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2871,6 +2871,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   atkSpawnPoint: {fileID: 1943477912}
+  playerData:
+    name: 
+    hp: 0
+    position: []
+    rotation: []
   skill:
   - skillType: 0
     skillName: 0
@@ -3532,6 +3537,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   atkSpawnPoint: {fileID: 1417968353}
+  playerData:
+    name: 
+    hp: 0
+    position: []
+    rotation: []
   skill: []
 --- !u!4 &996783728
 Transform:
@@ -3567,6 +3577,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   atkSpawnPoint: {fileID: 1417968353}
+  playerData:
+    name: 
+    hp: 0
+    position: []
+    rotation: []
   skill: []
 --- !u!95 &996783730
 Animator:

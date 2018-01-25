@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SocketIO;
 using System;
+using Newtonsoft.Json;
 
 public class WSGameManager : MonoBehaviour
 {
@@ -10,25 +11,121 @@ public class WSGameManager : MonoBehaviour
     public GameObject playerPrefabs;
     public Transform[] spawnPoint;
     public SocketIOComponent socket;
+
     // Use this for initialization
     IEnumerator Start()
     {
-        socket.On("UserConnected", OnUserConnected);
-        socket.On("UserDisConnected", OnUserDisConnected);
+        socket = GameObject.Find("SocketIO").GetComponent<SocketIOComponent>();
+        socket.On("OnPlay", OnPlay);
+        socket.On("OnLeaveRoom", OnLeaveRoom);
+        socket.On("OnMove", OnMove);
+        socket.On("OnRotate", OnRotate);
+        socket.On("OnRotate", OnRotate);
+        socket.On("OnAnimChange", OnAnimChange);
         yield return new WaitForSeconds(0.3f);
-        socket.Emit("Connect");
+        var obj = new
+        {
+            spawnPoints = GenerateSpawnPointJson(),
+            name = User.instance.GetPlayerData().name
+        };
+        print(JsonConvert.SerializeObject(obj));
+        socket.Emit("Play", new JSONObject(JsonConvert.SerializeObject(obj)));
     }
-    /// <summary>
-    /// other player connect;
-    /// </summary>
-    /// <param name="obj"></param>
-    private void OnUserConnected(SocketIOEvent obj)
+    List<float[]> GenerateSpawnPointJson()
     {
-        print(obj.data["name"].str);
-    }
-    private void OnUserDisConnected(SocketIOEvent obj)
-    {
-        throw new NotImplementedException();
+        List<float[]> positions = new List<float[]>();
+        for (int i = 0; i < spawnPoint.Length; i++)
+        {
+            positions.Add(new float[3] { spawnPoint[i].position.x, spawnPoint[i].position.y, spawnPoint[i].position.z });
+        }
+        return positions;
     }
 
+    #region send data
+
+    public void SendPosition(Vector3 pos)
+    {
+        PositionJson p = new PositionJson(pos);
+        print(p.ToJson());
+        socket.Emit("Move", new JSONObject(JsonConvert.SerializeObject(p)));
+    }
+    public void SendRotaion( Quaternion rot)
+    {
+        RotationJson r = new RotationJson(rot);
+        print(r.ToJson());
+        socket.Emit("Rotate", new JSONObject(JsonConvert.SerializeObject(r)));
+    }
+    public void SendAnimation(AnimationJson animJson)
+    {
+        AnimationJson data = animJson;
+        socket.Emit("Animate", new JSONObject(JsonConvert.SerializeObject(data)));
+    }
+    #endregion
+    #region recieve data
+    private void OnPlay(SocketIOEvent obj)
+    {
+        print(obj.data + " ");
+        var data = new
+        {
+            players = new PlayerJson[0]
+        };
+        data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
+        print(JsonConvert.SerializeObject(data));
+        foreach (PlayerJson item in data.players)
+        {
+            if (players.ContainsKey(item.name) == false)
+            {
+                GameObject g = Instantiate(playerPrefabs);
+                g.name = item.name;
+                // is local
+                if (User.instance.GetPlayerData().name == item.name)
+                {
+                    g.GetComponent<Player>().SetIsLocal();
+                    g.AddComponent<SynchronizeTransform>();
+                }
+
+                g.GetComponent<Player>().playerData = item;
+                g.transform.position = PositionJson.FromJson(item.position);
+
+                // add player to dict
+                players.Add(item.name, g);
+            }
+        }
+
+    }
+    private void OnLeaveRoom(SocketIOEvent obj)
+    {
+        string name = obj.data["name"].str;
+        Destroy(players[name].gameObject);
+        players.Remove(name);
+    }
+
+    private void OnMove(SocketIOEvent obj)
+    {
+        var data = new
+        {
+            name = "",
+            position = new float[3]
+        };
+        data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
+        float[] vect = data.position;
+        players[data.name].transform.position = PositionJson.FromJson(vect);
+    }
+    private void OnRotate(SocketIOEvent obj)
+    {
+        var data = new
+        {
+            name = "",
+            rotation = new float[3]
+        };
+        data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
+        float[] euler = data.rotation;
+        players[data.name].transform.rotation = RotationJson.FromJson(euler);
+    }
+    private void OnAnimChange(SocketIOEvent obj)
+    {
+        AnimationJson anim = JsonConvert.DeserializeObject<AnimationJson>(obj.data.GetField("animation")+"");
+        players[obj.data.GetField("name").str].GetComponent<PlayerAnimatorController>().UpdateAnimation(anim.name, anim.args);
+    }
+    #endregion
 }

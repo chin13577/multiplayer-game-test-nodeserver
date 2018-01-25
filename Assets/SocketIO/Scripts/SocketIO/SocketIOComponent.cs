@@ -96,6 +96,7 @@ namespace SocketIO
                 instance = this;
             else if (instance != this)
                 Destroy(gameObject);
+            DontDestroyOnLoad(this.gameObject);
             encoder = new Encoder();
 			decoder = new Decoder();
 			parser = new Parser();

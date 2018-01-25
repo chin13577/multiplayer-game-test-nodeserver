@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using SocketIO;
 
-public class SynchronizeTransform : WSNetworking
+public class SynchronizeTransform : MonoBehaviour
 {
-    Action<Vector3> OnPositionChanged;
-    Action<Quaternion> OnRotationChanged;
-    Action<Vector3> OnScaleChanged;
+    public bool isLocal;
+    WSGameManager manager;
 
-    public bool isSyncPosition;
-    public bool isSyncRotation;
-    public bool isSyncScale;
     Vector3 oldPosition;
     Quaternion oldRotation;
-    Vector3 oldScale;
+    float timer;
 
     #region networking
     Vector3 targetPos;
@@ -23,28 +20,27 @@ public class SynchronizeTransform : WSNetworking
 
     private void Start()
     {
-        if (isSyncPosition)
-            SyncPosition();
-        if (isSyncRotation)
-            SyncRotation();
-        if (isSyncScale)
-            SyncScale();
+        manager = GameObject.FindObjectOfType<WSGameManager>();
+        SyncPosition();
+        SyncRotation();
     }
 
     void FixedUpdate()
     {
-        if (isSyncPosition)
+        timer += Time.deltaTime;
+        if(timer >= 0.1f)
+        {
+            timer = 0;
             SyncPosition();
-        if (isSyncRotation)
             SyncRotation();
+        }
     }
     void SyncPosition()
     {
         if (oldPosition != transform.position)
         {
             oldPosition = transform.position;
-            if (OnPositionChanged != null)
-                OnPositionChanged(oldPosition);
+            manager.SendPosition(oldPosition);
         }
     }
     void SyncRotation()
@@ -52,17 +48,7 @@ public class SynchronizeTransform : WSNetworking
         if (oldRotation != transform.rotation)
         {
             oldRotation = transform.rotation;
-            if (OnRotationChanged != null)
-                OnRotationChanged(oldRotation);
-        }
-    }
-    void SyncScale()
-    {
-        if (oldScale != transform.localScale)
-        {
-            oldScale = transform.localScale;
-            if (OnScaleChanged != null)
-                OnScaleChanged(oldScale);
+            manager.SendRotaion(oldRotation);
         }
     }
 }

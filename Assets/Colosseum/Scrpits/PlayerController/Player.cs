@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 
-public class Player : WSNetworking
+public class Player : MonoBehaviour
 {
     public enum PlayerState { Idle, Rolling, Casting, Hit }
     [SerializeField] private PlayerState _playerState = PlayerState.Idle;
@@ -27,10 +27,12 @@ public class Player : WSNetworking
     public Action<PlayerState> OnUpdatePlayerState;
 
     InputHandler controller;
+    public bool isLocal;
     public PlayerAnimatorController animController;
     public LayerMask layer;
     public Transform atkSpawnPoint;
     #region Variables
+    public PlayerJson playerData;
     public SkillData[] skill;
     Vector3 direction;
     Vector3 velocity;
@@ -67,27 +69,16 @@ public class Player : WSNetworking
             skill[i] = SkillFactory.Instance.GetSkillData(skill[i].skillName);
         }
     }
-    private void OnEnable()
-    {
-        if (isLocal == false)
-            return;
-        InputHandler.OnMovementBtnDrag += Callback_OnJoyStickValueChange;
-    }
     private void OnDisable()
     {
         if (isLocal == false)
             return;
         InputHandler.OnMovementBtnDrag -= Callback_OnJoyStickValueChange;
     }
-    private void Start()
-    {
-        if (isLocal && OnPlayerCreated != null)
-        {
-            OnPlayerCreated(this);
-        }
-    }
     private void Update()
     {
+        if (isLocal == false) { return; }
+
         if (velocity.y <= 0 && isGrounded)
         {
             velocity.y = 0;
@@ -112,11 +103,13 @@ public class Player : WSNetworking
         {
             RotateCharacter(new Vector3(vect.x, 0, vect.y));
             animController.UpdateAnimation("Speed", 1);
+            animController.SendAnimToServer("Speed", 1);
             runSpeed = 3;
         }
         else
         {
             animController.UpdateAnimation("Speed", 0);
+            animController.SendAnimToServer("Speed", 0);
             runSpeed = 0;
         }
         if (playerState == PlayerState.Rolling)
@@ -127,10 +120,20 @@ public class Player : WSNetworking
         Quaternion quaternion = Quaternion.LookRotation(dir);
         transform.rotation = quaternion;
     }
+    public void SetIsLocal()
+    {
+        isLocal = true;
+        InputHandler.OnMovementBtnDrag += Callback_OnJoyStickValueChange;
+        if (OnPlayerCreated != null)
+        {
+            OnPlayerCreated(this);
+        }
+    }
     public void UseSkill(SkillData skillData, Transform currentSkillTransform, Vector3 attackDir)
     {
         playerState = PlayerState.Casting;
         animController.UpdateAnimation("Speed", 0);
+        animController.SendAnimToServer("Speed", 0);
         runSpeed = 0;
         rollSpeed = 0;
         RotateCharacter(attackDir);
@@ -142,6 +145,7 @@ public class Player : WSNetworking
             // Initial skill
             SpawnSkill(skillData, currentSkillTransform);
         });
+        animController.SendAnimToServer("Casting", skillData.skillName.ToString());
 
     }
     /// <summary>
@@ -165,6 +169,7 @@ public class Player : WSNetworking
         playerState = PlayerState.Rolling;
         runSpeed = 0;
         rollSpeed = 6;
+        animController.SendAnimToServer("IsRolling", 0.3f);
         animController.UpdateAnimation("IsRolling", 0.3f, () =>
         {
             rollSpeed = 0;
@@ -179,6 +184,7 @@ public class Player : WSNetworking
         if (playerState == PlayerState.Rolling) { return; }
         playerState = PlayerState.Hit;
         animController.UpdateAnimation("IsHit");
+        animController.SendAnimToServer("IsHit");
         velocity.Set(dir.x, velocity.y, dir.z);
         if (knockbackTween != null)
             knockbackTween.Kill();

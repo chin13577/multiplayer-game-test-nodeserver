@@ -314,7 +314,6 @@ GameObject:
   - component: {fileID: 114727451575298282}
   - component: {fileID: 143733783528286524}
   - component: {fileID: 114236225354471398}
-  - component: {fileID: 114043918375851244}
   - component: {fileID: 95928000835772494}
   m_Layer: 0
   m_Name: Player
@@ -910,21 +909,6 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114043918375851244
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1752539144246572}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42e46c3fe3ef98b4f9377271e4364ca9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isLocal: 0
-  isSyncPosition: 1
-  isSyncRotation: 1
-  isSyncScale: 0
 --- !u!114 &114236225354471398
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -949,13 +933,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0805c0929bf3847a3bf8d45f1a921c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLocal: 0
   _playerState: 0
+  isLocal: 0
   animController: {fileID: 114236225354471398}
   layer:
     serializedVersion: 2
     m_Bits: 4294967295
   atkSpawnPoint: {fileID: 4745585867806162}
+  playerData:
+    name: 
+    hp: 0
+    position: []
+    rotation: []
   skill:
   - skillType: 0
     skillName: 0
