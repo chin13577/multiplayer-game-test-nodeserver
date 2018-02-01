@@ -15,25 +15,48 @@ public class SynchronizeTransform : MonoBehaviour
 
     #region networking
     Vector3 targetPos;
-    Vector3 targetRot;
+    Quaternion targetRot;
     #endregion
 
+    private void Awake()
+    {
+        print(gameObject.name + " " + "awake");
+    }
     private void Start()
     {
         manager = GameObject.FindObjectOfType<WSGameManager>();
-        SyncPosition();
-        SyncRotation();
+        if (isLocal)
+        {
+            SyncPosition();
+            SyncRotation();
+        }
     }
 
     void FixedUpdate()
     {
-        timer += Time.deltaTime;
-        if(timer >= 0.1f)
+        if (isLocal)
         {
-            timer = 0;
-            SyncPosition();
-            SyncRotation();
+            timer += Time.deltaTime;
+            if (timer >= 0.1f)
+            {
+                timer = 0;
+                SyncPosition();
+                SyncRotation();
+            }
         }
+        else
+        {
+            transform.position = Vector3.Lerp(transform.position, targetPos, 0.25f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 0.25f);
+        }
+    }
+    public void SetTargetPosition(Vector3 pos)
+    {
+        targetPos = pos;
+    }
+    public void SetTargetRotation(Quaternion q)
+    {
+        targetRot = q;
     }
     void SyncPosition()
     {

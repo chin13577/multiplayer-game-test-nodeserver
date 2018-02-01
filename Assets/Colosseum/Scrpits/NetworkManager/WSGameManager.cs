@@ -81,12 +81,15 @@ public class WSGameManager : MonoBehaviour
                 if (User.instance.GetPlayerData().name == item.name)
                 {
                     g.GetComponent<Player>().SetIsLocal();
-                    g.AddComponent<SynchronizeTransform>();
+                    g.GetComponent<SynchronizeTransform>().isLocal = true ;
+                }
+                else
+                {
+                    g.GetComponent<SynchronizeTransform>().isLocal = false;
                 }
 
                 g.GetComponent<Player>().playerData = item;
                 g.transform.position = PositionJson.FromJson(item.position);
-
                 // add player to dict
                 players.Add(item.name, g);
             }
@@ -109,7 +112,8 @@ public class WSGameManager : MonoBehaviour
         };
         data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
         float[] vect = data.position;
-        players[data.name].transform.position = PositionJson.FromJson(vect);
+        players[data.name].GetComponent<SynchronizeTransform>().SetTargetPosition(PositionJson.FromJson(vect));
+        //players[data.name].transform.position = PositionJson.FromJson(vect);
     }
     private void OnRotate(SocketIOEvent obj)
     {
@@ -120,7 +124,8 @@ public class WSGameManager : MonoBehaviour
         };
         data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
         float[] euler = data.rotation;
-        players[data.name].transform.rotation = RotationJson.FromJson(euler);
+        //players[data.name].transform.rotation = RotationJson.FromJson(euler);
+        players[data.name].GetComponent<SynchronizeTransform>().SetTargetRotation(RotationJson.FromJson(euler));
     }
     private void OnAnimChange(SocketIOEvent obj)
     {
