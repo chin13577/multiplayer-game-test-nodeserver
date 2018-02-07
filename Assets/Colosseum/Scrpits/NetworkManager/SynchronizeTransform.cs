@@ -17,11 +17,7 @@ public class SynchronizeTransform : MonoBehaviour
     Vector3 targetPos;
     Quaternion targetRot;
     #endregion
-
-    private void Awake()
-    {
-        print(gameObject.name + " " + "awake");
-    }
+    
     private void Start()
     {
         manager = GameObject.FindObjectOfType<WSGameManager>();

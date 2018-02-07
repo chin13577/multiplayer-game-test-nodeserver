@@ -74,6 +74,7 @@ public class Player : MonoBehaviour
         if (isLocal == false)
             return;
         InputHandler.OnMovementBtnDrag -= Callback_OnJoyStickValueChange;
+        InputHandler.OnMovementBtnPress -= Callback_OnJoyStickPress;
     }
     private void Update()
     {
@@ -91,17 +92,18 @@ public class Player : MonoBehaviour
     }
 
     #endregion
-    public void Callback_OnJoyStickValueChange(Vector2 vect)
+    bool joyMovePress;
+    public void Callback_OnJoyStickPress(bool isPress, Vector2 pos)
     {
-        currentMoveDir = vect;
+        currentMoveDir = pos;
+        joyMovePress = isPress;
         if (playerState != PlayerState.Idle && playerState != PlayerState.Rolling)
         {
             runSpeed = 0;
             return;
         }
-        if (vect != Vector2.zero)
+        if (isPress)
         {
-            RotateCharacter(new Vector3(vect.x, 0, vect.y));
             animController.UpdateAnimation("Speed", 1);
             animController.SendAnimToServer("Speed", 1);
             runSpeed = 3;
@@ -115,6 +117,21 @@ public class Player : MonoBehaviour
         if (playerState == PlayerState.Rolling)
             runSpeed = 0;
     }
+    public void Callback_OnJoyStickValueChange(Vector2 vect)
+    {
+        currentMoveDir = vect;
+        if (playerState != PlayerState.Idle && playerState != PlayerState.Rolling)
+        {
+            runSpeed = 0;
+            return;
+        }
+        if (vect != Vector2.zero)
+        {
+            RotateCharacter(new Vector3(vect.x, 0, vect.y));
+        }
+        if (playerState == PlayerState.Rolling)
+            runSpeed = 0;
+    }
     void RotateCharacter(Vector3 dir)
     {
         Quaternion quaternion = Quaternion.LookRotation(dir);
@@ -124,6 +141,7 @@ public class Player : MonoBehaviour
     {
         isLocal = true;
         InputHandler.OnMovementBtnDrag += Callback_OnJoyStickValueChange;
+        InputHandler.OnMovementBtnPress += Callback_OnJoyStickPress;
         if (OnPlayerCreated != null)
         {
             OnPlayerCreated(this);
@@ -141,7 +159,7 @@ public class Player : MonoBehaviour
         animController.UpdateAnimation("Casting", skillData.skillName.ToString(), () =>
         {
             playerState = PlayerState.Idle;
-            Callback_OnJoyStickValueChange(currentMoveDir);
+            Callback_OnJoyStickPress(joyMovePress, currentMoveDir);
             // Initial skill
             SpawnSkill(skillData, currentSkillTransform);
         });
@@ -174,7 +192,7 @@ public class Player : MonoBehaviour
         {
             rollSpeed = 0;
             playerState = PlayerState.Idle;
-            Callback_OnJoyStickValueChange(currentMoveDir);
+            Callback_OnJoyStickPress(joyMovePress, currentMoveDir);
         });
         //DOTween.To((x) => rollSpeed = x, 10, 0, 0.45f).OnComplete(() => playerState = PlayerState.Idle);
     }

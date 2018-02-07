@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
+    public static event Action<bool,Vector2> OnMovementBtnPress;
     public static event Action<Vector2> OnMovementBtnDrag;
     public static event Action<Vector2> OnActionBtnDrag;
     public static event Action<bool, ActionJoyStick> OnSkillBtnPress;
@@ -39,14 +40,12 @@ public class InputHandler : MonoBehaviour
     private void OnEnable()
     {
         Player.OnPlayerCreated += OnPlayerCreated;
-        movementStick.OnValueChange += Callback_OnMovementStickChange;
         rollBtn.OnPress += Callback_OnRollBtnPress;
     }
 
     private void OnDisable()
     {
         Player.OnPlayerCreated -= OnPlayerCreated;
-        movementStick.OnValueChange -= Callback_OnMovementStickChange;
         rollBtn.OnPress -= Callback_OnRollBtnPress;
     }
     private void Callback_OnRollBtnPress(bool press, ActionJoyStick button)
@@ -62,7 +61,12 @@ public class InputHandler : MonoBehaviour
             this.player = playerController;
         }
     }
-    void Callback_OnMovementStickChange(Vector2 pos)
+    public void MovementStickPress(bool isPress,Vector2 pos)
+    {
+        if (OnMovementBtnPress != null)
+            OnMovementBtnPress(isPress,pos);
+    }
+    public void MovementStickChange(Vector2 pos)
     {
         if (OnMovementBtnDrag != null)
             OnMovementBtnDrag(pos);
