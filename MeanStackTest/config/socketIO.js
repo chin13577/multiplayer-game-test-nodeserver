@@ -93,6 +93,45 @@ module.exports = function (app) {
             socket.broadcast.to(socket.room).emit('OnAnimChange', dataObj);
         });
 
+        socket.on('SpawnSkill', (data) => {
+            if (!roomList[socket.room].skillDict) {
+                roomList[socket.room].skillDict = {};
+            }
+            let skillDict = roomList[socket.room].skillDict;
+            let obj = {
+                id = data.id,
+                sender = data.owner,
+                skillType = data.type,
+                position = data.position
+            };
+            skillDict[obj.id] = obj;
+            socket.broadcast.to(socket.room).emit('OnSpawnSkill', obj);
+        });
+        socket.on('ChangeSkillPosition', (data) => {
+            let obj = {
+                id = data.id,
+                position = data.position
+            };
+            let skillDict = roomList[socket.room].skillDict;
+            if (!skillDict[obj.id]){
+                return;
+            }
+            skillDict[obj.id].position = obj.position;
+            socket.broadcast.to(socket.room).emit('OnChangeSkillPosition',obj);
+        });
+        socket.on('DestroySkill', (data) => {
+            let obj = {
+                id = data.id,
+            };
+            let skillDict = roomList[socket.room].skillDict;
+            if (!skillDict[obj.id]){
+                return;
+            }
+            delete skillDict[obj.id];
+            socket.broadcast.to(socket.room).emit('OnDestroySkill',obj);
+        });
+
+
         socket.on('Test', () => {
             console.log(socket.id + ' ' + socket.room);
             console.log(io.sockets.adapter.rooms);
@@ -110,7 +149,9 @@ module.exports = function (app) {
             }
         });
     });
-
+    for (i = 0; i < 10; i++) {
+        console.log("k");
+    }
     return io;
 }
 

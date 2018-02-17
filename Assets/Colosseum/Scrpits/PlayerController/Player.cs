@@ -166,11 +166,6 @@ public class Player : MonoBehaviour
         animController.SendAnimToServer("Casting", skillData.skillName.ToString());
 
     }
-    /// <summary>
-    /// Spawn Skill
-    /// </summary>
-    /// <param name="skillData"></param>
-    /// <param name="currentSkillTransform"></param>
     void SpawnSkill(SkillData skillData, Transform currentSkillTransform)
     {
         GameObject g = SkillFactory.Instance.GetSkillObject(skillData.skillName);

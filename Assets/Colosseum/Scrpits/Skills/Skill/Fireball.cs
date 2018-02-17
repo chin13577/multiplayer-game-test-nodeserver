@@ -10,7 +10,10 @@ public class Fireball : Skill
         transform.position = initTransform.position + Vector3.up * 0.5f;
         Quaternion quaternion = Quaternion.FromToRotation(transform.forward, initTransform.forward);
         transform.rotation = quaternion;
-        StartCoroutine(UpdatePos(10f, 6f));
+        if (User.instance.name == owner)
+        {
+            StartCoroutine(UpdatePos(10f, 6f));
+        }
     }
 
     public override void ResetValue()
@@ -20,13 +23,13 @@ public class Fireball : Skill
         transform.rotation = Quaternion.identity;
         StopAllCoroutines();
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Skill") return;
         if (other.name != owner)
         {
-            if (other.tag == "Player" )
+            if (other.tag == "Player")
             {
                 other.GetComponent<Player>().Knockback(this.transform.forward);
             }
@@ -35,10 +38,20 @@ public class Fireball : Skill
     }
     IEnumerator UpdatePos(float speed, float lifeTime)
     {
+        float cooldown = 0;
         while (lifeTime > 0)
         {
             lifeTime -= Time.deltaTime;
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
+
+            //cooldown of send data to server
+            cooldown += Time.deltaTime;
+            if (cooldown >= 1)
+            {
+                cooldown = 0;
+                //WSGameManager.instance.
+            }
+
             yield return null;
         }
         base.DestroyObject();

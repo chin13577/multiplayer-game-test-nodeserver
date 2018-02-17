@@ -14,7 +14,7 @@ public class PlayerAnimatorController : MonoBehaviour
     {
         runtimeAnimator = Instantiate(runtimeAnimator);
         anim.runtimeAnimatorController = runtimeAnimator;
-        manager = GameObject.FindObjectOfType<WSGameManager>();
+        manager = WSGameManager.instance;
     }
     public void UpdateAnimation(string name, object args = null, System.Action callback = null)
     {

@@ -16,6 +16,8 @@ public abstract class Skill : MonoBehaviour
     public abstract void Action(Transform initTransform);
     public void DestroyObject()
     {
+        // send data to server.
+
         SkillFactory.Instance.RecycleObject(this);
     }
 }
