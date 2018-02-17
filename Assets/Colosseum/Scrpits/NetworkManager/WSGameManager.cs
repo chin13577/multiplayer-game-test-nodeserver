@@ -7,11 +7,17 @@ using Newtonsoft.Json;
 
 public class WSGameManager : MonoBehaviour
 {
+    public static WSGameManager instance;
     public Dictionary<string, GameObject> players = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> bullets = new Dictionary<string, GameObject>();
     public GameObject playerPrefabs;
     public Transform[] spawnPoint;
     public SocketIOComponent socket;
 
+    private void Awake()
+    {
+        instance = this;
+    }
     // Use this for initialization
     IEnumerator Start()
     {
@@ -49,6 +55,18 @@ public class WSGameManager : MonoBehaviour
         print(p.ToJson());
         socket.Emit("Move", new JSONObject(JsonConvert.SerializeObject(p)));
     }
+    
+    public void SendSkillPosition(string name,Vector3 pos)
+    {
+        PositionJson p = new PositionJson(pos);
+        var obj = new
+        {
+            skillName = name,
+            position = p.position
+        };
+        socket.Emit("SpawnSkill", new JSONObject(JsonConvert.SerializeObject(obj)));
+    }
+
     public void SendRotaion( Quaternion rot)
     {
         RotationJson r = new RotationJson(rot);
@@ -131,6 +149,16 @@ public class WSGameManager : MonoBehaviour
     {
         AnimationJson anim = JsonConvert.DeserializeObject<AnimationJson>(obj.data.GetField("animation")+"");
         players[obj.data.GetField("name").str].GetComponent<PlayerAnimatorController>().UpdateAnimation(anim.name, anim.args);
+    }
+    void OnUseSkill(SkillData skillData, Transform currentSkillTransform)
+    {
+        GameObject g = SkillFactory.Instance.GetSkillObject(skillData.skillName);
+        if (g != null)
+        {
+            Skill obj = g.GetComponent<Skill>();
+            obj.owner = this.name;
+            obj.Action(currentSkillTransform);
+        }
     }
     #endregion
 }
