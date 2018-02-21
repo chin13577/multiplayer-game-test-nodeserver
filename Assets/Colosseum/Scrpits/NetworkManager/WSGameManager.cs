@@ -53,7 +53,7 @@ public class WSGameManager : MonoBehaviour
     public void SendPosition(Vector3 pos)
     {
         PositionJson p = new PositionJson(pos);
-        print(p.ToJson());
+        //print(p.ToJson());
         socket.Emit("Move", new JSONObject(JsonConvert.SerializeObject(p)));
     }
     
@@ -71,12 +71,13 @@ public class WSGameManager : MonoBehaviour
     public void SendRotaion( Quaternion rot)
     {
         RotationJson r = new RotationJson(rot);
-        print(r.ToJson());
+        //print(r.ToJson());
         socket.Emit("Rotate", new JSONObject(JsonConvert.SerializeObject(r)));
     }
     public void SendAnimation(AnimationJson animJson)
     {
         AnimationJson data = animJson;
+        print(data.ToJson());
         socket.Emit("Animate", new JSONObject(JsonConvert.SerializeObject(data)));
     }
     #endregion
@@ -99,7 +100,6 @@ public class WSGameManager : MonoBehaviour
                 // is local
                 if (User.instance.GetPlayerData().name == item.name)
                 {
-                    g.GetComponent<Player>().SetIsLocal();
                     g.AddComponent<PlayerController>();
                     g.GetComponent<SynchronizeTransform>().isLocal = true ;
                 }

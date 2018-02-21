@@ -1,60 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using DG.Tweening;
-using System;
 
 public class CancelButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public static System.Action<bool> OnCancelSkill;
-    public Image image;
+    Image image;
     Tweener tween;
+    bool isCancel;
     void Awake()
     {
         image = transform.GetChild(0).GetComponent<Image>();
         image.transform.localScale = Vector3.zero;
     }
-    private void OnEnable()
-    {
-        InputHandler.OnActionBtnPress += Callback_OnActionBtnPress;
-        //InputHandler.OnSkillBtnPress += Callback_OnSkillBtnPress;
-        //InputHandler.OnRollBtnPress += Callback_OnRollBtnPress;
-    }
-    private void OnDisable()
-    {
-        InputHandler.OnActionBtnPress -= Callback_OnActionBtnPress;
-        //InputHandler.OnSkillBtnPress -= Callback_OnSkillBtnPress;
-        //InputHandler.OnRollBtnPress -= Callback_OnRollBtnPress;
-    }
 
+    public bool IsCancelSkill()
+    {
+        return isCancel;
+    }
+    public void ActivateCancelBtn(bool isPress, ActionJoyStick button)
+    {
+        if (isPress == true && button.isCooldown == false)
+            ShowButton();
+        else
+            HideButton();
+    }
     private void Callback_OnActionBtnPress(bool obj, ActionJoyStick button)
     {
-        //if (button.isCooldown) return;
         if (obj == true && button.isCooldown==false)
             ShowButton();
         else
             HideButton();
     }
-
-    //private void Callback_OnRollBtnPress(bool obj, ActionJoyStick button)
-    //{
-    //    if (button.isCooldown) return;
-    //    if (obj == true)
-    //        ShowButton();
-    //    else
-    //        HideButton();
-    //}
-
-    //private void Callback_OnSkillBtnPress(bool arg1, ActionJoyStick button)
-    //{
-    //    if (button.isCooldown) return;
-    //    if (arg1 == true)
-    //        ShowButton();
-    //    else
-    //        HideButton();
-    //}
     void ShowButton()
     {
         if (tween != null) DOTween.Kill(tween);
@@ -67,13 +44,11 @@ public class CancelButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (OnCancelSkill != null)
-            OnCancelSkill(true);
+        isCancel = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (OnCancelSkill != null)
-            OnCancelSkill(false);
+        isCancel = false;
     }
 }

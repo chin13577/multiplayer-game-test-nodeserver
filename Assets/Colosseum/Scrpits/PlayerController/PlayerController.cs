@@ -13,7 +13,6 @@ public class PlayerController : MonoBehaviour, IControllable
     SkillData currentSkill;
     Player player;
     Vector3 attackDir;
-    bool isCancelSkill;
     bool isPressRollBtnSuccess;
 
     IEnumerator actionCo;
@@ -31,35 +30,7 @@ public class PlayerController : MonoBehaviour, IControllable
         aoeTransform.gameObject.SetActive(false);
         singleTargetTransform.gameObject.SetActive(false);
     }
-    private void OnEnable()
-    {
-        //Player.OnPlayerCreated += OnPlayerCreated;
-        //InputHandler.OnSkillBtnPress += Callback_OnSkillBtnPress;
-        //InputHandler.OnActionBtnDrag += Callback_OnSkillBtnDrag;
-        //InputHandler.instance.rollBtn.OnPress += Callback_OnRollBtnPress;
-        CancelButton.OnCancelSkill += Callback_OnCancelSkill;
-    }
 
-
-    private void OnDisable()
-    {
-        //Player.OnPlayerCreated -= OnPlayerCreated;
-        //InputHandler.OnSkillBtnPress -= Callback_OnSkillBtnPress;
-        //InputHandler.OnActionBtnDrag -= Callback_OnSkillBtnDrag;
-        //InputHandler.instance.rollBtn.OnPress -= Callback_OnRollBtnPress;
-        CancelButton.OnCancelSkill -= Callback_OnCancelSkill;
-    }
-    //void OnPlayerCreated(Player playerController)
-    //{
-    //    if (playerController.isLocal)
-    //    {
-    //        player = playerController;
-    //    }
-    //}
-    private void Callback_OnCancelSkill(bool isCancel)
-    {
-        isCancelSkill = isCancel;
-    }
     void ShowSkillGuide(SkillData skill)
     {
         if (skill.skillType == SkillData.SkillType.Single)
@@ -131,16 +102,18 @@ public class PlayerController : MonoBehaviour, IControllable
             currentSkillTransform.rotation = quaternion;
             currentSkillTransform.position = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z);
         }
-        attackDir.Set(pos.x, 0, pos.y);
+        attackDir = pos;
     }
 
-    public void OnSkillBtnPress(bool isPress, ActionJoyStick button)
+    public void OnSkillBtnPress(bool isPress, bool isCancelSkill, ActionJoyStick button)
     {
         if (button.isCooldown == true) return;
         if (button.buttonIndex == -1) return;
         if (player.playerState == Player.PlayerState.Casting || player.playerState == Player.PlayerState.Casting ||
-            player.playerState == Player.PlayerState.Hit) { return; }
-        //if (player.playerState == Player.PlayerState.Rolling) return;
+            player.playerState == Player.PlayerState.Hit)
+        {
+            return;
+        }
 
         if (isPress)
         {
@@ -162,23 +135,21 @@ public class PlayerController : MonoBehaviour, IControllable
         }
     }
 
-    public void OnRollBtnPress(bool isPress, ActionJoyStick button)
+    public void OnRollBtnPress(bool isPress, bool isCancelSkill, ActionJoyStick button)
     {
         if (button.isCooldown) return;
         if (isPress)
         {
-            isPressRollBtnSuccess = true;
+            //isPressRollBtnSuccess = true;
         }
         else
         {
-            if (isPressRollBtnSuccess == false) return;
-            //Roll
             if (isCancelSkill == false)
             {
                 player.Roll();
                 InputHandler.instance.rollBtn.SetCoolDown(0.5f);
             }
-            isPressRollBtnSuccess = false;
+            //isPressRollBtnSuccess = false;
         }
     }
 }

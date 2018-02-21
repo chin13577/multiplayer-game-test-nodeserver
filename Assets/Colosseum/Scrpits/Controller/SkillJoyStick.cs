@@ -16,7 +16,7 @@ public class SkillJoyStick : ActionJoyStick, IPointerDownHandler, IDragHandler, 
     public RectTransform border;
 
 
-     void Awake()
+    void Awake()
     {
         Initialize();
     }
@@ -77,10 +77,6 @@ public class SkillJoyStick : ActionJoyStick, IPointerDownHandler, IDragHandler, 
         pos = Vector2.zero;
         UpdateStickPosition(pos);
         InputHandler.instance.ActionBtnDrag(ref pos);
-
-        //if (isCancel == false)
-            InputHandler.instance.ActionBtnPress(false, this);
-        //else
-           // isCancel = false;
+        InputHandler.instance.ActionBtnPress(false, this);
     }
 }

@@ -5,15 +5,10 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    //public static event Action<bool,Vector2> OnMovementBtnPress;
-    //public static event Action<Vector2> OnMovementBtnDrag;
-    //public static event Action<Vector2> OnActionBtnDrag;
-    //public static event Action<bool, ActionJoyStick> OnSkillBtnPress;
-    //public static event Action<bool, ActionJoyStick> OnRollBtnPress;
-    public static event Action<bool, ActionJoyStick> OnActionBtnPress;
     public NormalActionButton rollBtn;
     public MovementJoyStick movementStick;
     public ActionJoyStick[] actionStick;
+    public CancelButton cancelBtn;
 
     private ActionJoyStick selectedSkillBtn;
     private List<IControllable> controlList;
@@ -30,8 +25,7 @@ public class InputHandler : MonoBehaviour
             return _instance;
         }
     }
-    //Player player;
-    //Awake is always called before any Start functions
+
     void Awake()
     {
         if (_instance == null)
@@ -39,26 +33,7 @@ public class InputHandler : MonoBehaviour
             _instance = this;
         }
     }
-    //private void OnEnable()
-    //{
-    //    Player.OnPlayerCreated += OnPlayerCreated;
-    //    rollBtn.OnPress += Callback_OnRollBtnPress;
-    //}
-
-    //private void OnDisable()
-    //{
-    //    Player.OnPlayerCreated -= OnPlayerCreated;
-    //    rollBtn.OnPress -= Callback_OnRollBtnPress;
-    //}
-
-    //void OnPlayerCreated(Player playerController)
-    //{
-    //    if (playerController.isLocal)
-    //    {
-    //        this.player = playerController;
-    //    }
-    //}
-
+  
     public void AddController(IControllable controllable)
     {
         if (controlList == null)
@@ -74,6 +49,7 @@ public class InputHandler : MonoBehaviour
         for (int i = 0; i < controlList.Count; i++)
         {
             controlList[i].OnMovementBtnPress(isPress, pos);
+            controlList[i].OnMovementBtnDrag(pos);
         }
     }
     public void MovementStickDrag(Vector2 pos)
@@ -87,10 +63,9 @@ public class InputHandler : MonoBehaviour
     {
         for (int i = 0; i < controlList.Count; i++)
         {
-            controlList[i].OnRollBtnPress(isPress, button);
+            controlList[i].OnRollBtnPress(isPress, cancelBtn.IsCancelSkill(), button);
         }
-        if (OnActionBtnPress != null)
-            OnActionBtnPress(isPress, button);
+        cancelBtn.ActivateCancelBtn(isPress, button);
     }
     public void ActionBtnPress(bool isPress, ActionJoyStick button)
     {
@@ -102,12 +77,11 @@ public class InputHandler : MonoBehaviour
 
         for (int i = 0; i < controlList.Count; i++)
         {
-            controlList[i].OnSkillBtnPress(isPress, button);
-            controlList[i].OnActionBtnDrag( button.pos);
+            controlList[i].OnSkillBtnPress(isPress, cancelBtn.IsCancelSkill(), button);
+            controlList[i].OnActionBtnDrag(button.pos);
         }
-        print(isPress);
-        if (OnActionBtnPress != null)
-            OnActionBtnPress(isPress, button);
+
+        cancelBtn.ActivateCancelBtn(isPress, button);
     }
     public void ActionBtnDrag(ref Vector2 value)
     {

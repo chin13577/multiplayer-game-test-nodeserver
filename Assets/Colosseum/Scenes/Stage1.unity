@@ -771,7 +771,7 @@ GameObject:
   - component: {fileID: 371390035}
   - component: {fileID: 371390037}
   m_Layer: 5
-  m_Name: Image
+  m_Name: CancelBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1713,10 +1713,10 @@ RectTransform:
   m_Father: {fileID: 1369559057}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 40, y: 40}
+  m_SizeDelta: {x: -196, y: -196}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &732848512
 MonoBehaviour:
@@ -1787,6 +1787,7 @@ MonoBehaviour:
   - {fileID: 124613144}
   - {fileID: 302443266}
   - {fileID: 291872060}
+  cancelBtn: {fileID: 371390037}
 --- !u!4 &737749004
 Transform:
   m_ObjectHideFlags: 0

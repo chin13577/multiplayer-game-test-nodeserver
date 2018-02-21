@@ -27,7 +27,6 @@ public class Player : MonoBehaviour
     public Action<PlayerState> OnUpdatePlayerState;
 
     InputHandler controller;
-    public bool isLocal;
     public PlayerAnimatorController animController;
     public LayerMask layer;
     public Transform atkSpawnPoint;
@@ -69,17 +68,9 @@ public class Player : MonoBehaviour
             skill[i] = SkillFactory.Instance.GetSkillData(skill[i].skillName);
         }
     }
-    private void OnDisable()
-    {
-        if (isLocal == false)
-            return;
-        //InputHandler.OnMovementBtnDrag -= Callback_OnJoyStickValueChange;
-        //InputHandler.OnMovementBtnPress -= Callback_OnJoyStickPress;
-    }
+
     private void Update()
     {
-        if (isLocal == false) { return; }
-
         if (velocity.y <= 0 && isGrounded)
         {
             velocity.y = 0;
@@ -106,8 +97,6 @@ public class Player : MonoBehaviour
         {
             runSpeed = 0;
         }
-        //if (playerState == PlayerState.Rolling)
-        //    runSpeed = 0;
     }
     public void StopMoving()
     {
@@ -123,60 +112,21 @@ public class Player : MonoBehaviour
         {
             if (vect != Vector2.zero)
             {
-                Quaternion quaternion = Quaternion.LookRotation(new Vector3(vect.x, 0, vect.y));
-                transform.rotation = quaternion;
+                RotateCharacter(vect);
             }
         }
         else
         {
             runSpeed = 0;
         }
-        //if (playerState == PlayerState.Rolling)
-        //    runSpeed = 0;
     }
-    //public void Callback_OnJoyStickPress(bool isPress, Vector2 pos)
-    //{
-    //    currentMoveDir = pos;
-    //    isMoving = isPress;
-    //    if (playerState != PlayerState.Idle && playerState != PlayerState.Rolling)
-    //    {
-    //        runSpeed = 0;
-    //        return;
-    //    }
-    //    if (isPress)
-    //    {
-    //        animController.UpdateAnimation("Speed", 1);
-    //        animController.SendAnimToServer("Speed", 1);
-    //        runSpeed = 3;
-    //    }
-    //    else
-    //    {
-    //        animController.UpdateAnimation("Speed", 0);
-    //        animController.SendAnimToServer("Speed", 0);
-    //        runSpeed = 0;
-    //    }
-    //    if (playerState == PlayerState.Rolling)
-    //        runSpeed = 0;
-    //}
-    //public void Callback_OnJoyStickValueChange(Vector2 vect)
-    //{
 
-    //}
-    void RotateCharacter(Vector3 dir)
+    private void RotateCharacter(Vector3 dir)
     {
-        Quaternion quaternion = Quaternion.LookRotation(dir);
+        Quaternion quaternion = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y));
         transform.rotation = quaternion;
     }
-    public void SetIsLocal()
-    {
-        isLocal = true;
-        //InputHandler.OnMovementBtnDrag += Callback_OnJoyStickValueChange;
-        //InputHandler.OnMovementBtnPress += Callback_OnJoyStickPress;
-        if (OnPlayerCreated != null)
-        {
-            OnPlayerCreated(this);
-        }
-    }
+
     public void UseSkill(SkillData skillData, Transform currentSkillTransform, Vector3 attackDir)
     {
         playerState = PlayerState.Casting;
@@ -194,8 +144,6 @@ public class Player : MonoBehaviour
                 Moving();
                 RotateCharacter(currentMoveDir);
             }
-            //Callback_OnJoyStickPress(isMoving, currentMoveDir);
-            // Initial skill
             SpawnSkill(skillData, currentSkillTransform);
         });
         animController.SendAnimToServer("Casting", skillData.skillName.ToString());
@@ -227,9 +175,7 @@ public class Player : MonoBehaviour
                 Moving();
                 RotateCharacter(currentMoveDir);
             }
-            //Callback_OnJoyStickPress(isMoving, currentMoveDir);
         });
-        //DOTween.To((x) => rollSpeed = x, 10, 0, 0.45f).OnComplete(() => playerState = PlayerState.Idle);
     }
     Tween knockbackTween;
     public void Knockback(Vector3 dir)
