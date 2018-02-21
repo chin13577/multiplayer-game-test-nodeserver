@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldownImage: {fileID: 1188518686}
-  buttonIndex: -1
+  buttonIndex: 0
   isActivate: 0
   isCooldown: 0
   pos: {x: 0, y: 0}
@@ -693,7 +693,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldownImage: {fileID: 787838557}
-  buttonIndex: 2
+  buttonIndex: 0
   isActivate: 0
   isCooldown: 0
   pos: {x: 0, y: 0}
@@ -786,7 +786,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldownImage: {fileID: 664394166}
-  buttonIndex: 1
+  buttonIndex: 0
   isActivate: 0
   isCooldown: 0
   pos: {x: 0, y: 0}
@@ -1068,6 +1068,71 @@ Transform:
   m_Father: {fileID: 1665483119}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &369289261
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4672385839877568, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4672385839877568, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4672385839877568, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4672385839877568, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4672385839877568, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4672385839877568, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4672385839877568, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4672385839877568, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+      propertyPath: m_RootOrder
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1752539144246572, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+      propertyPath: m_Name
+      value: Player (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114911045935192184, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+  m_ParentPrefab: {fileID: 100100000, guid: d757257672f5bc64bb15e0b922d98333, type: 2}
+  m_IsPrefabParent: 0
+--- !u!1 &369289262 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1752539144246572, guid: d757257672f5bc64bb15e0b922d98333,
+    type: 2}
+  m_PrefabInternal: {fileID: 369289261}
+--- !u!114 &369289263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 369289262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b82aa6c31bc71eb428343cd4d29eddb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillPointPrefab: {fileID: 1705189099400166, guid: 33bc0353c9db40b418c2eb388a258a3a,
+    type: 2}
 --- !u!1 &371390033
 GameObject:
   m_ObjectHideFlags: 0
@@ -2383,7 +2448,6 @@ GameObject:
   m_Component:
   - component: {fileID: 737749004}
   - component: {fileID: 737749003}
-  - component: {fileID: 737749005}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -2402,13 +2466,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cf4728618607be49a98be1973cc390b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rollBtn: {fileID: 124613144}
-  movementStick: {fileID: 1369559060}
-  actionStick:
-  - {fileID: 676304599}
-  - {fileID: 124613144}
-  - {fileID: 302443266}
-  - {fileID: 291872060}
+  rollBtn: {fileID: 0}
+  movementStick: {fileID: 0}
+  actionStick: []
 --- !u!4 &737749004
 Transform:
   m_ObjectHideFlags: 0
@@ -2422,21 +2482,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &737749005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 737749002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b82aa6c31bc71eb428343cd4d29eddb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skillOrigin: {fileID: 1354599301}
-  singleTargetTransform: {fileID: 674846049}
-  aoeTransform: {fileID: 861591559}
-  normalAtkTransform: {fileID: 151281032}
 --- !u!1 &787838555
 GameObject:
   m_ObjectHideFlags: 0
@@ -2864,8 +2909,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0805c0929bf3847a3bf8d45f1a921c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLocal: 1
   _playerState: 0
+  isLocal: 1
   animController: {fileID: 824747032}
   layer:
     serializedVersion: 2
@@ -2926,9 +2971,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLocal: 0
-  isSyncPosition: 1
-  isSyncRotation: 1
-  isSyncScale: 0
 --- !u!95 &824747034
 Animator:
   serializedVersion: 3
@@ -3486,9 +3528,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLocal: 0
-  isSyncPosition: 1
-  isSyncRotation: 1
-  isSyncScale: 0
 --- !u!114 &996783725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3530,8 +3569,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0805c0929bf3847a3bf8d45f1a921c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLocal: 0
   _playerState: 0
+  isLocal: 0
   animController: {fileID: 996783725}
   layer:
     serializedVersion: 2
@@ -3570,8 +3609,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0805c0929bf3847a3bf8d45f1a921c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLocal: 0
   _playerState: 0
+  isLocal: 0
   animController: {fileID: 996783725}
   layer:
     serializedVersion: 2
@@ -5002,7 +5041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1354599301
 Transform:
   m_ObjectHideFlags: 0

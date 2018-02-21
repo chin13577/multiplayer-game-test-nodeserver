@@ -18,7 +18,7 @@ public class MockupController : MonoBehaviour {
             if (oldVect != vect)
             {
                 oldVect = vect;
-                p.Callback_OnJoyStickValueChange(vect.normalized);
+                //p.Callback_OnJoyStickValueChange(vect.normalized);
             }
             temp = true;
         }
@@ -27,7 +27,7 @@ public class MockupController : MonoBehaviour {
             if (temp == true)
             {
                 vect = Vector2.zero;
-                p.Callback_OnJoyStickValueChange(vect);
+                //p.Callback_OnJoyStickValueChange(vect);
             }
             temp = false;
         }

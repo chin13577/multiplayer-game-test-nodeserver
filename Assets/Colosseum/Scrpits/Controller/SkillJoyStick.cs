@@ -78,9 +78,9 @@ public class SkillJoyStick : ActionJoyStick, IPointerDownHandler, IDragHandler, 
         UpdateStickPosition(pos);
         InputHandler.instance.ActionBtnDrag(ref pos);
 
-        if (isCancel == false)
+        //if (isCancel == false)
             InputHandler.instance.ActionBtnPress(false, this);
-        else
-            isCancel = false;
+        //else
+           // isCancel = false;
     }
 }

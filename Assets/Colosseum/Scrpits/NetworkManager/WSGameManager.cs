@@ -10,7 +10,8 @@ public class WSGameManager : MonoBehaviour
     public static WSGameManager instance;
     public Dictionary<string, GameObject> players = new Dictionary<string, GameObject>();
     public Dictionary<string, GameObject> bullets = new Dictionary<string, GameObject>();
-    public GameObject playerPrefabs;
+    public GameObject playerPrefab;
+    public GameObject skillPointPrefab;
     public Transform[] spawnPoint;
     public SocketIOComponent socket;
 
@@ -93,12 +94,13 @@ public class WSGameManager : MonoBehaviour
         {
             if (players.ContainsKey(item.name) == false)
             {
-                GameObject g = Instantiate(playerPrefabs);
+                GameObject g = Instantiate(playerPrefab);
                 g.name = item.name;
                 // is local
                 if (User.instance.GetPlayerData().name == item.name)
                 {
                     g.GetComponent<Player>().SetIsLocal();
+                    g.AddComponent<PlayerController>();
                     g.GetComponent<SynchronizeTransform>().isLocal = true ;
                 }
                 else

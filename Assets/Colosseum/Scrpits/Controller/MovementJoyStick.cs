@@ -45,7 +45,7 @@ public class MovementJoyStick : MonoBehaviour, IPointerDownHandler, IDragHandler
     {
         Vector2 pos = Calculate(eventData);
         button.anchoredPosition = new Vector2(pos.x * rect.sizeDelta.x / 2.5f, pos.y * rect.sizeDelta.y / 2.5f);
-        InputHandler.instance.MovementStickChange(pos);
+        InputHandler.instance.MovementStickDrag(pos);
         if (OnValueChange != null) { OnValueChange(pos); }
     }
 

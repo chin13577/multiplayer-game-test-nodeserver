@@ -18,32 +18,43 @@ public class CancelButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     }
     private void OnEnable()
     {
-        InputHandler.OnSkillBtnPress += Callback_OnSkillBtnPress;
-        InputHandler.OnRollBtnPress += Callback_OnRollBtnPress;
+        InputHandler.OnActionBtnPress += Callback_OnActionBtnPress;
+        //InputHandler.OnSkillBtnPress += Callback_OnSkillBtnPress;
+        //InputHandler.OnRollBtnPress += Callback_OnRollBtnPress;
     }
     private void OnDisable()
     {
-        InputHandler.OnSkillBtnPress -= Callback_OnSkillBtnPress;
-        InputHandler.OnRollBtnPress -= Callback_OnRollBtnPress;
+        InputHandler.OnActionBtnPress -= Callback_OnActionBtnPress;
+        //InputHandler.OnSkillBtnPress -= Callback_OnSkillBtnPress;
+        //InputHandler.OnRollBtnPress -= Callback_OnRollBtnPress;
     }
 
-    private void Callback_OnRollBtnPress(bool obj, ActionJoyStick button)
+    private void Callback_OnActionBtnPress(bool obj, ActionJoyStick button)
     {
-        if (button.isCooldown) return;
-        if (obj == true)
+        //if (button.isCooldown) return;
+        if (obj == true && button.isCooldown==false)
             ShowButton();
         else
             HideButton();
     }
 
-    private void Callback_OnSkillBtnPress(bool arg1, ActionJoyStick button)
-    {
-        if (button.isCooldown) return;
-        if (arg1 == true)
-            ShowButton();
-        else
-            HideButton();
-    }
+    //private void Callback_OnRollBtnPress(bool obj, ActionJoyStick button)
+    //{
+    //    if (button.isCooldown) return;
+    //    if (obj == true)
+    //        ShowButton();
+    //    else
+    //        HideButton();
+    //}
+
+    //private void Callback_OnSkillBtnPress(bool arg1, ActionJoyStick button)
+    //{
+    //    if (button.isCooldown) return;
+    //    if (arg1 == true)
+    //        ShowButton();
+    //    else
+    //        HideButton();
+    //}
     void ShowButton()
     {
         if (tween != null) DOTween.Kill(tween);
