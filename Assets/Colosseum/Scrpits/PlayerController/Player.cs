@@ -26,11 +26,12 @@ public class Player : MonoBehaviour
     public static event onPlayerCreated OnPlayerCreated;
     public Action<PlayerState> OnUpdatePlayerState;
 
-    InputHandler controller;
+
     public PlayerAnimatorController animController;
     public LayerMask layer;
     public Transform atkSpawnPoint;
     #region Variables
+    public bool isLocal;
     public PlayerJson playerData;
     public SkillData[] skill;
     Vector3 direction;
@@ -61,7 +62,7 @@ public class Player : MonoBehaviour
     {
         c_controller = GetComponent<CharacterController>();
         velocity.Set(transform.forward.x, velocity.y, transform.forward.z);
-        controller = InputHandler.instance;
+        animController = GetComponent<PlayerAnimatorController>();
         // mork up
         for (int i = 0; i < skill.Length; i++)
         {
@@ -71,6 +72,10 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (!isLocal)
+        {
+            return;
+        }
         if (velocity.y <= 0 && isGrounded)
         {
             velocity.y = 0;

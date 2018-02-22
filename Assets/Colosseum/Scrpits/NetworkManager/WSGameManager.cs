@@ -56,8 +56,8 @@ public class WSGameManager : MonoBehaviour
         //print(p.ToJson());
         socket.Emit("Move", new JSONObject(JsonConvert.SerializeObject(p)));
     }
-    
-    public void SendSkillPosition(string name,Vector3 pos)
+
+    public void SendSkillPosition(string name, Vector3 pos)
     {
         PositionJson p = new PositionJson(pos);
         var obj = new
@@ -68,7 +68,7 @@ public class WSGameManager : MonoBehaviour
         socket.Emit("SpawnSkill", new JSONObject(JsonConvert.SerializeObject(obj)));
     }
 
-    public void SendRotaion( Quaternion rot)
+    public void SendRotaion(Quaternion rot)
     {
         RotationJson r = new RotationJson(rot);
         //print(r.ToJson());
@@ -77,7 +77,7 @@ public class WSGameManager : MonoBehaviour
     public void SendAnimation(AnimationJson animJson)
     {
         AnimationJson data = animJson;
-        print(data.ToJson());
+        //print(data.ToJson());
         socket.Emit("Animate", new JSONObject(JsonConvert.SerializeObject(data)));
     }
     #endregion
@@ -101,10 +101,12 @@ public class WSGameManager : MonoBehaviour
                 if (User.instance.GetPlayerData().name == item.name)
                 {
                     g.AddComponent<PlayerController>();
-                    g.GetComponent<SynchronizeTransform>().isLocal = true ;
+                    g.GetComponent<Player>().isLocal = true;
+                    g.GetComponent<SynchronizeTransform>().isLocal = true;
                 }
                 else
                 {
+                    g.GetComponent<Player>().isLocal = false;
                     g.GetComponent<SynchronizeTransform>().isLocal = false;
                 }
 
@@ -149,7 +151,7 @@ public class WSGameManager : MonoBehaviour
     }
     private void OnAnimChange(SocketIOEvent obj)
     {
-        AnimationJson anim = JsonConvert.DeserializeObject<AnimationJson>(obj.data.GetField("animation")+"");
+        AnimationJson anim = JsonConvert.DeserializeObject<AnimationJson>(obj.data.GetField("animation") + "");
         players[obj.data.GetField("name").str].GetComponent<PlayerAnimatorController>().UpdateAnimation(anim.name, anim.args);
     }
     void OnUseSkill(SkillData skillData, Transform currentSkillTransform)

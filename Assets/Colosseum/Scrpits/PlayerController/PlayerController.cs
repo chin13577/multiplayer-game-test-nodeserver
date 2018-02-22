@@ -138,18 +138,10 @@ public class PlayerController : MonoBehaviour, IControllable
     public void OnRollBtnPress(bool isPress, bool isCancelSkill, ActionJoyStick button)
     {
         if (button.isCooldown) return;
-        if (isPress)
+        if(!isPress && !isCancelSkill)
         {
-            //isPressRollBtnSuccess = true;
-        }
-        else
-        {
-            if (isCancelSkill == false)
-            {
-                player.Roll();
-                InputHandler.instance.rollBtn.SetCoolDown(0.5f);
-            }
-            //isPressRollBtnSuccess = false;
+            player.Roll();
+            button.SetCoolDown(0.5f);
         }
     }
 }
