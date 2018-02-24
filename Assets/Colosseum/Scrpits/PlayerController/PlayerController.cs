@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     void ShowSkillGuide(SkillData skill)
     {
-        if (skill.skillType == SkillData.SkillType.Single)
+        if (skill.skillType == SkillType.Single)
         {
             currentSkillTransform = singleTargetTransform;
             aoeTransform.gameObject.SetActive(false);
@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour, IControllable
             Quaternion quaternion = Quaternion.LookRotation(player.transform.forward);
             currentSkillTransform.rotation = quaternion;
         }
-        else if (skill.skillType == SkillData.SkillType.AOE)
+        else if (skill.skillType == SkillType.AOE)
         {
             currentSkillTransform = aoeTransform;
             aoeTransform.gameObject.SetActive(true);
@@ -87,14 +87,14 @@ public class PlayerController : MonoBehaviour, IControllable
     public void OnActionBtnDrag(Vector2 pos)
     {
         if (currentSkill == null) return;
-        if (currentSkill.skillType == SkillData.SkillType.AOE)
+        if (currentSkill.skillType == SkillType.AOE)
         {
             if (pos == Vector2.zero) return;
             pos = pos * currentSkill.distance;
             currentSkillTransform.localScale = Vector3.one * currentSkill.size;
             currentSkillTransform.position = new Vector3(player.transform.position.x + pos.x, player.transform.position.y, player.transform.position.z + pos.y);
         }
-        else if (currentSkill.skillType == SkillData.SkillType.Single)
+        else if (currentSkill.skillType == SkillType.Single)
         {
             if (pos == Vector2.zero) return;
             Vector3 dir = new Vector3(pos.x, 0, pos.y);

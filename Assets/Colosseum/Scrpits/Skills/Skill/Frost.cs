@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class Frost : Skill
 {
-    public override void Action(Transform initTransform)
+    public override void Action(Vector3 position, Quaternion direction)
     {
         transform.parent = null;
-        transform.position = initTransform.position;
-        transform.localScale = new Vector3(skillData.size, transform.localScale.y, skillData.size) ;
-        Quaternion quaternion = Quaternion.FromToRotation(transform.forward, initTransform.forward);
+        transform.position = position;
+        transform.localScale = new Vector3(skillData.size, transform.localScale.y, skillData.size);
+        Quaternion quaternion = direction;
         transform.rotation = quaternion;
-        StartCoroutine(Frezz( 6f));
+        StartCoroutine(Frezz(6f));
     }
-
     public override void ResetValue()
     {
         gameObject.SetActive(false);

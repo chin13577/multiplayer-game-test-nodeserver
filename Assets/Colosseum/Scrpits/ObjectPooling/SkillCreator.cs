@@ -19,7 +19,7 @@ public class SkillCreator : MonoBehaviour
     //Initializes the game for each level.
     public void Initialize()
     {
-        for (int i = 0; i < Enum.GetNames(typeof(SkillFactory.SkillName)).Length; i++)
+        for (int i = 0; i < Enum.GetNames(typeof(SkillName)).Length; i++)
         {
             skillContainer.Add(new Queue<Skill>());
             for (int j = 0; j < amount; j++)

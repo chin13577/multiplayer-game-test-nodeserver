@@ -8,8 +8,8 @@ using Newtonsoft.Json;
 public class WSGameManager : MonoBehaviour
 {
     public static WSGameManager instance;
-    public Dictionary<string, GameObject> players = new Dictionary<string, GameObject>();
-    public Dictionary<string, GameObject> bullets = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> playerDict = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> skillDict = new Dictionary<string, GameObject>();
     public GameObject playerPrefab;
     public GameObject skillPointPrefab;
     public Transform[] spawnPoint;
@@ -27,8 +27,8 @@ public class WSGameManager : MonoBehaviour
         socket.On("OnLeaveRoom", OnLeaveRoom);
         socket.On("OnMove", OnMove);
         socket.On("OnRotate", OnRotate);
-        socket.On("OnRotate", OnRotate);
         socket.On("OnAnimChange", OnAnimChange);
+        socket.On("OnSpawnSkill", OnSpawnSkill);
         yield return new WaitForSeconds(0.3f);
         var obj = new
         {
@@ -52,33 +52,40 @@ public class WSGameManager : MonoBehaviour
 
     public void SendPosition(Vector3 pos)
     {
-        PositionJson p = new PositionJson(pos);
-        //print(p.ToJson());
-        socket.Emit("Move", new JSONObject(JsonConvert.SerializeObject(p)));
-    }
-
-    public void SendSkillPosition(string name, Vector3 pos)
-    {
-        PositionJson p = new PositionJson(pos);
         var obj = new
         {
-            skillName = name,
-            position = p.position
+            position = VectorJson.ToFloat(pos)
         };
-        socket.Emit("SpawnSkill", new JSONObject(JsonConvert.SerializeObject(obj)));
+        //print(JsonConvert.SerializeObject(obj));
+        socket.Emit("Move", new JSONObject(JsonConvert.SerializeObject(obj)));
     }
 
     public void SendRotaion(Quaternion rot)
     {
-        RotationJson r = new RotationJson(rot);
-        //print(r.ToJson());
-        socket.Emit("Rotate", new JSONObject(JsonConvert.SerializeObject(r)));
+        var obj = new
+        {
+            rotation = QuaternionJson.ToFloat(rot)
+        };
+        //print(JsonConvert.SerializeObject(obj));
+        socket.Emit("Rotate", new JSONObject(JsonConvert.SerializeObject(obj)));
     }
     public void SendAnimation(AnimationJson animJson)
     {
         AnimationJson data = animJson;
         //print(data.ToJson());
         socket.Emit("Animate", new JSONObject(JsonConvert.SerializeObject(data)));
+    }
+    public void SendSpawnSkill(string owner, SkillName skillName, Vector3 position, Quaternion direction)
+    {
+        var obj = new
+        {
+            id = owner + "_" + DateTime.Now.ToString("hh.mm.ss.ffffff"),
+            owner = owner + "",
+            skillName = skillName.ToString(),
+            position = VectorJson.ToFloat(position),
+            direction = QuaternionJson.ToFloat(direction)
+        };
+        socket.Emit("SpawnSkill", new JSONObject(JsonConvert.SerializeObject(obj)));
     }
     #endregion
     #region recieve data
@@ -93,7 +100,7 @@ public class WSGameManager : MonoBehaviour
         print(JsonConvert.SerializeObject(data));
         foreach (PlayerJson item in data.players)
         {
-            if (players.ContainsKey(item.name) == false)
+            if (playerDict.ContainsKey(item.name) == false)
             {
                 GameObject g = Instantiate(playerPrefab);
                 g.name = item.name;
@@ -111,9 +118,9 @@ public class WSGameManager : MonoBehaviour
                 }
 
                 g.GetComponent<Player>().playerData = item;
-                g.transform.position = PositionJson.FromJson(item.position);
+                g.transform.position = VectorJson.ToVector3(item.position);
                 // add player to dict
-                players.Add(item.name, g);
+                playerDict.Add(item.name, g);
             }
         }
 
@@ -121,8 +128,8 @@ public class WSGameManager : MonoBehaviour
     private void OnLeaveRoom(SocketIOEvent obj)
     {
         string name = obj.data["name"].str;
-        Destroy(players[name].gameObject);
-        players.Remove(name);
+        Destroy(playerDict[name].gameObject);
+        playerDict.Remove(name);
     }
 
     private void OnMove(SocketIOEvent obj)
@@ -134,7 +141,7 @@ public class WSGameManager : MonoBehaviour
         };
         data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
         float[] vect = data.position;
-        players[data.name].GetComponent<SynchronizeTransform>().SetTargetPosition(PositionJson.FromJson(vect));
+        playerDict[data.name].GetComponent<SynchronizeTransform>().SetTargetPosition(VectorJson.ToVector3(vect));
         //players[data.name].transform.position = PositionJson.FromJson(vect);
     }
     private void OnRotate(SocketIOEvent obj)
@@ -147,22 +154,33 @@ public class WSGameManager : MonoBehaviour
         data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
         float[] euler = data.rotation;
         //players[data.name].transform.rotation = RotationJson.FromJson(euler);
-        players[data.name].GetComponent<SynchronizeTransform>().SetTargetRotation(RotationJson.FromJson(euler));
+        playerDict[data.name].GetComponent<SynchronizeTransform>().SetTargetRotation(QuaternionJson.ToQuaternion(euler));
     }
     private void OnAnimChange(SocketIOEvent obj)
     {
         AnimationJson anim = JsonConvert.DeserializeObject<AnimationJson>(obj.data.GetField("animation") + "");
-        players[obj.data.GetField("name").str].GetComponent<PlayerAnimatorController>().UpdateAnimation(anim.name, anim.args);
+        playerDict[obj.data.GetField("name").str].GetComponent<PlayerAnimatorController>().UpdateAnimation(anim.name, anim.args);
     }
-    void OnUseSkill(SkillData skillData, Transform currentSkillTransform)
+    void OnSpawnSkill(SocketIOEvent obj)
     {
-        GameObject g = SkillFactory.Instance.GetSkillObject(skillData.skillName);
+        var data = new
+        {
+            id = "",
+            owner = "",
+            skillName = "",
+            position = new float[3],
+            direction = new float[3]
+        };
+        data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
+        GameObject g = SkillFactory.Instance.GetSkillObject((SkillName)Enum.Parse(typeof(SkillName), data.skillName));
         if (g != null)
         {
-            Skill obj = g.GetComponent<Skill>();
-            obj.owner = this.name;
-            obj.Action(currentSkillTransform);
+            Skill skill = g.GetComponent<Skill>();
+            skill.id = data.id;
+            skill.owner = data.owner;
+            skill.Action(VectorJson.ToVector3(data.position),QuaternionJson.ToQuaternion(data.direction));
         }
+        skillDict.Add(data.id, g);
     }
     #endregion
 }

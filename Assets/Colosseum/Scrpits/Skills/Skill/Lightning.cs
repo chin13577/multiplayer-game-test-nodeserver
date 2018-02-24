@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class Lightning : Skill
 {
-    public override void Action(Transform initTransform)
+    public override void Action(Vector3 position, Quaternion direction)
     {
-        transform.position = initTransform.position;
+        transform.position = position;
         //Quaternion quaternion = Quaternion.FromToRotation(transform.forward, initTransform.forward);
-        transform.rotation = initTransform.rotation;
+        transform.rotation = direction;
         StartCoroutine(Duration(0.5f));
     }
-
     public override void ResetValue()
     {
         gameObject.SetActive(false);

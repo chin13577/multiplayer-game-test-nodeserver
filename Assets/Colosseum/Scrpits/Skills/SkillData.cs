@@ -5,9 +5,8 @@ using System;
 [Serializable]
 public class SkillData
 {
-    public enum SkillType { None, Single, AOE, Area };
     public SkillType skillType;
-    public SkillFactory.SkillName skillName;
+    public SkillName skillName;
     public float size;
     public float distance;
     public bool isSelectArea;

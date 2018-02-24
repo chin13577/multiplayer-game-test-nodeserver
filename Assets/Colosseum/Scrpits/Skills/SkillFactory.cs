@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SkillName
+{
+    Fireball, Lightning, Frost
+};
+public enum SkillType
+{
+    None, Single, AOE, Area
+};
 public class SkillFactory : MonoBehaviour
 {
     private static SkillFactory instance = null;
@@ -20,7 +28,6 @@ public class SkillFactory : MonoBehaviour
         }
     }
     public SkillCreator skillCreator;
-    public enum SkillName { Fireball, Lightning, Frost }
     public SkillList skills;
     private void Awake()
     {

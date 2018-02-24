@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class Fireball : Skill
 {
-    public override void Action(Transform initTransform)
+    public override void Action(Vector3 position, Quaternion direction)
     {
         transform.parent = null;
-        transform.position = initTransform.position + Vector3.up * 0.5f;
-        Quaternion quaternion = Quaternion.FromToRotation(transform.forward, initTransform.forward);
+        transform.position = position + Vector3.up * 0.5f;
+        Quaternion quaternion = direction;
         transform.rotation = quaternion;
         if (User.instance.name == owner)
         {
             StartCoroutine(UpdatePos(10f, 6f));
         }
     }
-
+    
     public override void ResetValue()
     {
         gameObject.SetActive(false);

@@ -39,40 +39,30 @@ public class PlayerJson
     public float[] rotation;
 }
 [Serializable]
-public class RotationJson
+public class QuaternionJson
 {
-    
-    public float[] rotation;
-    public RotationJson(Quaternion rot)
+    public static float[] ToFloat(Quaternion q)
     {
-        rotation = new float[3] { rot.eulerAngles.x, rot.eulerAngles.y, rot.eulerAngles.z };
+        return new float[3] { q.eulerAngles.x, q.eulerAngles.y, q.eulerAngles.z };
     }
-    public string ToJson()
+    public static Quaternion ToQuaternion(float[] euler)
     {
-        return JsonUtility.ToJson(this);
-    }
-    public static Quaternion FromJson(float[] rotation)
-    {
-        return Quaternion.Euler(rotation[0], rotation[1], rotation[2]);
+        return Quaternion.Euler(euler[0], euler[1], euler[2]);
     }
 }
 [Serializable]
-public class PositionJson
+public class VectorJson
 {
-    public float[] position;
-    public PositionJson(Vector3 pos)
+    public static float[] ToFloat(Vector3 pos)
     {
-        position = new float[3] { pos.x, pos.y, pos.z };
+        return new float[3] { pos.x, pos.y, pos.z };
     }
-    public string ToJson()
-    {
-        return JsonUtility.ToJson(this);
-    }
-    public static Vector3 FromJson(float[] position)
+    public static Vector3 ToVector3(float[] position)
     {
         return new Vector3(position[0], position[1], position[2]);
     }
 }
+[Serializable]
 public class AnimationJson
 {
     public string name;

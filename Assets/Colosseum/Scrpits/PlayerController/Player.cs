@@ -156,13 +156,19 @@ public class Player : MonoBehaviour
     }
     void SpawnSkill(SkillData skillData, Transform currentSkillTransform)
     {
-        GameObject g = SkillFactory.Instance.GetSkillObject(skillData.skillName);
-        if (g != null)
-        {
-            Skill obj = g.GetComponent<Skill>();
-            obj.owner = this.name;
-            obj.Action(currentSkillTransform);
-        }
+
+        //GameObject g = SkillFactory.Instance.GetSkillObject(skillData.skillName);
+        //if (g != null)
+        //{
+        //    Skill obj = g.GetComponent<Skill>();
+        //    obj.owner = this.name;
+        //    obj.Action(currentSkillTransform);
+        //}
+        // Send Bullet To Server.
+        WSGameManager.instance.SendSpawnSkill(playerData.name,
+            skillData.skillName,
+            currentSkillTransform.position,
+            transform.rotation);
     }
     public void Roll()
     {

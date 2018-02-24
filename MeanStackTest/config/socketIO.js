@@ -100,25 +100,15 @@ module.exports = function (app) {
             let skillDict = roomList[socket.room].skillDict;
             let obj = {
                 id: data.id,
-                sender: data.owner,
-                skillType: data.type,
-                position: data.position
+                owner: data.owner,
+                skillName: data.skillName,
+                position: data.position,
+                direction: data.direction
             };
             skillDict[obj.id] = obj;
-            socket.broadcast.to(socket.room).emit('OnSpawnSkill', obj);
+            io.to(socket.room).emit('OnSpawnSkill', obj);
         });
-        socket.on('ChangeSkillPosition', (data) => {
-            let obj = {
-                id: data.id,
-                position: data.position
-            };
-            let skillDict = roomList[socket.room].skillDict;
-            if (!skillDict[obj.id]) {
-                return;
-            }
-            skillDict[obj.id].position = obj.position;
-            socket.broadcast.to(socket.room).emit('OnChangeSkillPosition', obj);
-        });
+        
         socket.on('DestroySkill', (data) => {
             let obj = {
                 id: data.id,
