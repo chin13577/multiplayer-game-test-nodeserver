@@ -72,3 +72,12 @@ public class AnimationJson
         return JsonUtility.ToJson(this);
     }
 }
+[Serializable]
+public class SkillJson
+{
+    public string id;
+    public string owner;
+    public string skillName;
+    public float[] position;
+    public float[] direction;
+}

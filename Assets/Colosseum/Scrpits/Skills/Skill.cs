@@ -14,7 +14,8 @@ public abstract class Skill : MonoBehaviour
     }
 
     public abstract void ResetValue();
-    public abstract void Action(Vector3 position,Quaternion direction);
+    public abstract void EnterState(Vector3 position, Vector3 direction);
+    public abstract void UpdateState(Vector3 position, Vector3 direction);
     public void DestroyObject()
     {
         // send data to server.

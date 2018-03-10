@@ -165,10 +165,11 @@ public class Player : MonoBehaviour
         //    obj.Action(currentSkillTransform);
         //}
         // Send Bullet To Server.
+        Vector3 direction = (transform.rotation * Vector3.forward).normalized;
         WSGameManager.instance.SendSpawnSkill(playerData.name,
             skillData.skillName,
             currentSkillTransform.position,
-            transform.rotation);
+            direction);
     }
     public void Roll()
     {

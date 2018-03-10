@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Lightning : Skill
 {
-    public override void Action(Vector3 position, Quaternion direction)
+    public override void UpdateState(Vector3 position, Vector3 direction)
     {
         transform.position = position;
         //Quaternion quaternion = Quaternion.FromToRotation(transform.forward, initTransform.forward);
-        transform.rotation = direction;
+        transform.rotation = Quaternion.LookRotation(direction);
         StartCoroutine(Duration(0.5f));
     }
     public override void ResetValue()
@@ -38,4 +38,8 @@ public class Lightning : Skill
         base.DestroyObject();
     }
 
+    public override void EnterState(Vector3 position, Vector3 direction)
+    {
+        throw new System.NotImplementedException();
+    }
 }

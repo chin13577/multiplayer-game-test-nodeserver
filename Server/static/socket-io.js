@@ -1,15 +1,18 @@
 var io = require('socket.io')({ transports: ['websocket'], });
 
+io.attach(4567);
+
+var SkillFactory = require('./skill-factory');
 var GameWorld  = require('./game-world');
 module.exports = function (app) {
     var roomList = {};
     var server = require('http').Server(app);
+    var skillFactory = new SkillFactory();
 
     io.on('connection', function (socket) {
         socket.leaveAll();
         var user = null;
         var currentPlayer = null;
-        
         socket.on('JoinRoom', function (data) {
             // if first join. initial user.
             if (!user) {
@@ -37,7 +40,7 @@ module.exports = function (app) {
         socket.on('Start', (data) => {
             if(!roomList[socket.room].world){
                 roomList[socket.room].world = new GameWorld(io,socket.room);
-                roomList[socket.room].world.startGameLoop;
+                roomList[socket.room].world.startGameLoop();
             }
             socket.broadcast.to(socket.room).emit('OnStart', { data });
         });
@@ -95,32 +98,14 @@ module.exports = function (app) {
         });
 
         socket.on('SpawnSkill', (data) => {
-            if (!roomList[socket.room].skillDict) {
-                roomList[socket.room].skillDict = {};
-            }
-            let skillDict = roomList[socket.room].skillDict;
-            let obj = {
-                id: data.id,
-                owner: data.owner,
-                skillName: data.skillName,
-                position: data.position,
-                direction: data.direction
-            };
-            skillDict[obj.id] = obj;
-            console.log(obj);
-            io.to(socket.room).emit('OnSpawnSkill', obj);
+
+            let skill = skillFactory.getSkill(data);
+            roomList[socket.room].world.addGameObject(skill);
+            console.log(skill);
         });
         
         socket.on('DestroySkill', (data) => {
-            let obj = {
-                id: data.id,
-            };
-            let skillDict = roomList[socket.room].skillDict;
-            if (!skillDict[obj.id]) {
-                return;
-            }
-            delete skillDict[obj.id];
-            socket.broadcast.to(socket.room).emit('OnDestroySkill', obj);
+            roomList[socket.room].world.destroyGameObject(data.id);
         });
 
 
@@ -142,9 +127,9 @@ module.exports = function (app) {
         });
     });
     return io;
-}
 
-function addUserInRoom(socket, user) {
+    
+    function addUserInRoom (socket, user){
     if (!roomList[socket.room]) {
         // check room is undefine so create room.
         roomList[socket.room] = {};
@@ -177,6 +162,9 @@ function removeUserInRoom(socket, user) {
     if (index !== -1) {
         roomList[socket.room].users.splice(index, 1);
         if (roomList[socket.room].users.length === 0) {
+            if(roomList[socket.room].world){
+                roomList[socket.room].world.stopGameLoop();
+            }
             delete roomList[socket.room];
         }
     }
@@ -191,4 +179,5 @@ function getRoomData() {
         });
     }
     return data;
+}
 }

@@ -4,18 +4,25 @@ using UnityEngine;
 
 public class Fireball : Skill
 {
-    public override void Action(Vector3 position, Quaternion direction)
+    Vector3 targetPos;
+    public override void EnterState(Vector3 position, Vector3 direction)
     {
         transform.parent = null;
-        transform.position = position + Vector3.up * 0.5f;
-        Quaternion quaternion = direction;
-        transform.rotation = quaternion;
-        if (User.instance.name == owner)
-        {
-            StartCoroutine(UpdatePos(10f, 6f));
-        }
+        transform.position = position + Vector3.up*0.5f;
+        targetPos = position+ Vector3.up*0.5f;
+        transform.rotation = Quaternion.LookRotation(direction);
+        //targetPos = position + new Vector3(direction.x * 5 * Time.deltaTime, 0.5f, direction.z * 5 * Time.deltaTime);
     }
-    
+    public override void UpdateState(Vector3 position, Vector3 direction)
+    {
+        print(position);
+        targetPos = position;
+        transform.rotation = Quaternion.LookRotation(direction);
+    }
+    private void Update ()
+    {
+        transform.position = Vector3.Lerp(this.transform.position, targetPos, 0.3f*Time.deltaTime);
+    }
     public override void ResetValue()
     {
         gameObject.SetActive(false);
@@ -36,24 +43,6 @@ public class Fireball : Skill
             base.DestroyObject();
         }
     }
-    IEnumerator UpdatePos(float speed, float lifeTime)
-    {
-        float cooldown = 0;
-        while (lifeTime > 0)
-        {
-            lifeTime -= Time.deltaTime;
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
+   
 
-            //cooldown of send data to server
-            cooldown += Time.deltaTime;
-            if (cooldown >= 1)
-            {
-                cooldown = 0;
-                //WSGameManager.instance.
-            }
-
-            yield return null;
-        }
-        base.DestroyObject();
-    }
 }

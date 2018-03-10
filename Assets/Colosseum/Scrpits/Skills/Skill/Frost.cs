@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Frost : Skill
 {
-    public override void Action(Vector3 position, Quaternion direction)
+    public override void UpdateState(Vector3 position, Vector3 direction)
     {
         transform.parent = null;
         transform.position = position;
         transform.localScale = new Vector3(skillData.size, transform.localScale.y, skillData.size);
-        Quaternion quaternion = direction;
+        Quaternion quaternion = Quaternion.LookRotation(direction);
         transform.rotation = quaternion;
         StartCoroutine(Frezz(6f));
     }
@@ -41,4 +41,8 @@ public class Frost : Skill
         base.DestroyObject();
     }
 
+    public override void EnterState(Vector3 position, Vector3 direction)
+    {
+        throw new System.NotImplementedException();
+    }
 }
