@@ -18,8 +18,6 @@ public abstract class Skill : MonoBehaviour
     public abstract void UpdateState(Vector3 position, Vector3 direction);
     public void DestroyObject()
     {
-        // send data to server.
-
         SkillFactory.Instance.RecycleObject(this);
     }
 }

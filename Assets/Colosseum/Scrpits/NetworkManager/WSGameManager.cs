@@ -30,6 +30,7 @@ public class WSGameManager : MonoBehaviour
         socket.On("OnAnimChange", OnAnimChange);
         socket.On("OnSkillCreated", OnSkillCreated);
         socket.On("OnSkillUpdated", OnSkillUpdated);
+        socket.On("OnDestroySkill", OnDestroySkill);
         yield return new WaitForSeconds(0.3f);
         var obj = new
         {
@@ -39,6 +40,7 @@ public class WSGameManager : MonoBehaviour
         print(JsonConvert.SerializeObject(obj));
         socket.Emit("Play", new JSONObject(JsonConvert.SerializeObject(obj)));
     }
+
 
     List<float[]> GenerateSpawnPointJson()
     {
@@ -88,6 +90,11 @@ public class WSGameManager : MonoBehaviour
             direction = VectorJson.ToFloat(direction)
         };
         socket.Emit("SpawnSkill", new JSONObject(JsonConvert.SerializeObject(obj)));
+    }
+    public void SendDestroySkill(string id)
+    {
+        print("DestroySkill id: " + id);
+        socket.Emit("DestroySkill", new JSONObject(JsonConvert.SerializeObject(id)));
     }
     #endregion
     #region recieve data
@@ -191,37 +198,28 @@ public class WSGameManager : MonoBehaviour
     private void OnSkillUpdated(SocketIOEvent obj)
     {
         Debug.Log("[SocketIO] OnSkillUpdated: " + obj.name + " " + obj.data);
-        var data = new
+        var skill = new
         {
-            gameObjects = new List<SkillJson>()
+            data = new SkillJson()
         };
-
-        data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
-        for (int i = 0; i < data.gameObjects.Count; i++)
+        skill = JsonConvert.DeserializeAnonymousType(obj.data + "", skill);
+        SkillJson s = skill.data;
+        if (skillDict.ContainsKey(s.id))
         {
-            SkillJson skill = data.gameObjects[i];
-            if (skillDict.ContainsKey(skill.id))
-            {
-                skillDict[skill.id].GetComponent<Skill>().UpdateState(
-                    VectorJson.ToVector3(skill.position),
-                    VectorJson.ToVector3(skill.direction)
-                    );
-            }
-            else
-            {
-                //generate skill
-                GameObject g = SkillFactory.Instance.GetSkillObject(
-                    (SkillName)Enum.Parse(typeof(SkillName),
-                    skill.skillName));
-                if (g != null)
-                {
-                    Skill s = g.GetComponent<Skill>();
-                    s.id = skill.id;
-                    s.owner = skill.owner;
-                    s.EnterState(VectorJson.ToVector3(skill.position), VectorJson.ToVector3(skill.direction));
-                }
-                skillDict.Add(skill.id, g);
-            }
+            skillDict[s.id].GetComponent<Skill>().UpdateState(
+                VectorJson.ToVector3(s.position),
+                VectorJson.ToVector3(s.direction)
+                );
+        }
+    }
+    private void OnDestroySkill(SocketIOEvent obj)
+    {
+        Debug.Log("[SocketIO] OnDestroySkill: "+ obj.data.GetField("id").str);
+        string id = obj.data.GetField("id").str;
+        if (skillDict.ContainsKey(id))
+        {
+            skillDict[id].GetComponent<Skill>().DestroyObject();
+            skillDict.Remove(id);
         }
     }
     #endregion

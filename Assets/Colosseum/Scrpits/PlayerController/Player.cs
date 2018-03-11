@@ -143,13 +143,13 @@ public class Player : MonoBehaviour
         // cast anim
         animController.UpdateAnimation("Casting", skillData.skillName.ToString(), () =>
         {
+            SpawnSkill(skillData, currentSkillTransform);
             playerState = PlayerState.Idle;
             if (isMoving == true)
             {
                 Moving();
                 RotateCharacter(currentMoveDir);
             }
-            SpawnSkill(skillData, currentSkillTransform);
         });
         animController.SendAnimToServer("Casting", skillData.skillName.ToString());
 

@@ -8,25 +8,12 @@ module.exports = class GameWorld {
         this.loopId = 0;
 
         this.sendGameObjectsInterval = null;
-        this.tick =0.3;
+        this.tick =0.1;
     }
     addGameObject(obj) {
         this.gameObjects.push(obj);
-        // sending to all clients in 'game' room(channel), include sender
         let data = obj;
-
         this.io.in(this.room).emit('OnSkillCreated', { data });
-        // if(this.sendGameObjectsInterval){
-        //     clearInterval(this.sendGameObjectsInterval);
-        // }
-        // this.sendGameObjectsInterval = setInterval(() => {
-        //     if(this.gameObjects.length>0){
-        //         let gameObjects = this.gameObjects;
-        //         this.io.in(this.room).emit('OnSkillUpdated', {gameObjects});
-        //     }else{
-        //         clearInterval(this.sendGameObjectsInterval);
-        //     }
-        //   }, 120);
     }
     destroyGameObject(id) {
         let targetIndex = -1;
@@ -39,23 +26,17 @@ module.exports = class GameWorld {
         if (targetIndex == -1) {
             return;
         }
-        let obj = this.gameObjects[targetIndex];
         this.gameObjects.splice(targetIndex, 1);
-        this.io.in(this.room).emit('OnDestroySkill', obj);
+        this.io.in(this.room).emit('OnDestroySkill', {id});
 
+    }
+    sendUpdateGameObject(data){
+        this.io.in(this.room).emit('OnSkillUpdated', {data});
     }
     startGameLoop() {
         this.loopId = gameloop.setGameLoop((delta) => {
             for (let i = 0; i < this.gameObjects.length; i++) {
                 this.gameObjects[i].update(delta, this);
-            }
-            if ( this.tick <= 0 && this.gameObjects.length > 0) {
-                this.tick=0.3;
-                let gameObjects = this.gameObjects;
-                this.io.in(this.room).emit('OnSkillUpdated', {gameObjects});
-                console.log('update tick');
-            } else {
-                this.tick-=delta;
             }
         }, 1000 / 30);
 

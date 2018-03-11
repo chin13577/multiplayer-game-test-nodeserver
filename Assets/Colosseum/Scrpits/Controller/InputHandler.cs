@@ -32,12 +32,12 @@ public class InputHandler : MonoBehaviour
         {
             _instance = this;
         }
+        if (controlList == null)
+            controlList = new List<IControllable>();
     }
   
     public void AddController(IControllable controllable)
     {
-        if (controlList == null)
-            controlList = new List<IControllable>();
         controlList.Add(controllable);
     }
     public bool RemoveController(IControllable controllable)

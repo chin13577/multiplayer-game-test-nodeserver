@@ -104,8 +104,9 @@ module.exports = function (app) {
             console.log(skill);
         });
         
-        socket.on('DestroySkill', (data) => {
-            roomList[socket.room].world.destroyGameObject(data.id);
+        socket.on('DestroySkill', (id) => {
+            console.log(id);
+            roomList[socket.room].world.destroyGameObject(id);
         });
 
 
