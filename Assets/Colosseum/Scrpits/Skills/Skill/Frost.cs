@@ -28,7 +28,11 @@ public class Frost : Skill
         {
             if (other.tag == "Player")
             {
-                print("Frezz");
+                //send attack.
+                if (owner == User.instance.GetPlayerData().name && other.GetComponent<Player>().isDead == false)
+                {
+                    WSGameManager.instance.SendAttack(other.name, skillData.skillName, this.transform.forward);
+                }
             }
         }
     }

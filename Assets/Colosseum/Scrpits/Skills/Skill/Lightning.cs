@@ -21,13 +21,17 @@ public class Lightning : Skill
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (other.tag == "Skill") return;
         if (other.name != owner)
         {
             if (other.tag == "Player")
             {
-                print("stun");
+                //send attack.
+                if (owner == User.instance.GetPlayerData().name && other.GetComponent<Player>().isDead == false)
+                {
+                    WSGameManager.instance.SendAttack(other.name, skillData.skillName, this.transform.forward);
+                }
             }
         }
     }
-
 }

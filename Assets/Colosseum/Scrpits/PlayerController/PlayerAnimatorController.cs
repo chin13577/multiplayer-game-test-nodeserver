@@ -23,6 +23,9 @@ public class PlayerAnimatorController : MonoBehaviour
             case "Speed":
                 anim.SetFloat("Speed", Convert.ToInt32(args));
                 break;
+            case "Dead":
+                anim.SetTrigger("IsDead");
+                break;
             case "IsHit":
                 anim.SetTrigger("IsHit");
                 break;

@@ -8,8 +8,8 @@ public class Fireball : Skill
     public override void EnterState(Vector3 position, Vector3 direction)
     {
         transform.parent = null;
-        transform.position = position + Vector3.up*0.5f;
-        targetPos = position+ Vector3.up*0.5f;
+        transform.position = position + Vector3.up * 0.5f;
+        targetPos = position + Vector3.up * 0.5f;
         transform.rotation = Quaternion.LookRotation(direction);
         //targetPos = position + new Vector3(direction.x * 5 * Time.deltaTime, 0.5f, direction.z * 5 * Time.deltaTime);
     }
@@ -18,7 +18,7 @@ public class Fireball : Skill
         targetPos = position;
         transform.rotation = Quaternion.LookRotation(direction);
     }
-    private void FixedUpdate ()
+    private void FixedUpdate()
     {
         transform.position = Vector3.Lerp(this.transform.position, targetPos, 0.125f);
     }
@@ -37,17 +37,21 @@ public class Fireball : Skill
         {
             if (other.tag == "Player")
             {
-                other.GetComponent<Player>().Knockback(this.transform.forward);
                 //send attack.
+                if (owner == User.instance.GetPlayerData().name && other.GetComponent<Player>().isDead == false)
+                {
+                    WSGameManager.instance.SendAttack(other.name, skillData.skillName, this.transform.forward);
+                }
             }
-            if(owner == User.instance.GetPlayerData().name)
+            if (owner == User.instance.GetPlayerData().name)
             {
                 // send data to server.
                 WSGameManager.instance.SendDestroySkill(this.id);
+                // send hit player.
             }
-            //base.DestroyObject();
+            base.DestroyObject();
         }
     }
-   
+
 
 }

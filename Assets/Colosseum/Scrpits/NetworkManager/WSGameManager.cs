@@ -30,6 +30,8 @@ public class WSGameManager : MonoBehaviour
         socket.On("OnAnimChange", OnAnimChange);
         socket.On("OnSkillCreated", OnSkillCreated);
         socket.On("OnSkillUpdated", OnSkillUpdated);
+        socket.On("OnDamaged", OnDamaged);
+        socket.On("OnDead", OnDead);
         socket.On("OnDestroySkill", OnDestroySkill);
         yield return new WaitForSeconds(0.3f);
         var obj = new
@@ -96,6 +98,16 @@ public class WSGameManager : MonoBehaviour
         print("DestroySkill id: " + id);
         socket.Emit("DestroySkill", new JSONObject(JsonConvert.SerializeObject(id)));
     }
+    public void SendAttack(string target, SkillName skillName, Vector3 direction)
+    {
+        var obj = new
+        {
+            target = target,
+            skillName = skillName.ToString(),
+            direction = VectorJson.ToFloat(direction)
+        };
+        socket.Emit("Attack", new JSONObject(JsonConvert.SerializeObject(obj)));
+    }
     #endregion
     #region recieve data
     private void OnPlay(SocketIOEvent obj)
@@ -107,15 +119,15 @@ public class WSGameManager : MonoBehaviour
         };
         data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
         print(JsonConvert.SerializeObject(data));
-        foreach (PlayerJson item in data.players)
+        foreach (PlayerJson p in data.players)
         {
-            print(item.name);
-            if (playerDict.ContainsKey(item.name) == false)
+            print(p.name);
+            if (playerDict.ContainsKey(p.name) == false)
             {
                 GameObject g = Instantiate(playerPrefab);
-                g.name = item.name;
+                g.name = p.name;
                 // is local
-                if (User.instance.GetPlayerData().name == item.name)
+                if (User.instance.GetPlayerData().name == p.name)
                 {
                     g.AddComponent<PlayerController>();
                     g.GetComponent<Player>().isLocal = true;
@@ -127,10 +139,10 @@ public class WSGameManager : MonoBehaviour
                     g.GetComponent<SynchronizeTransform>().isLocal = false;
                 }
 
-                g.GetComponent<Player>().playerData = item;
-                g.transform.position = VectorJson.ToVector3(item.position);
+                g.GetComponent<Player>().SetPlayerData(p);
+                g.transform.position = VectorJson.ToVector3(p.position);
                 // add player to dict
-                playerDict.Add(item.name, g);
+                playerDict.Add(p.name, g);
             }
         }
 
@@ -212,9 +224,44 @@ public class WSGameManager : MonoBehaviour
                 );
         }
     }
+    private void OnDead(SocketIOEvent obj)
+    {
+        var data = new
+        {
+            target = ""
+        };
+        data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
+        playerDict[data.target].GetComponent<Player>().Dead();
+    }
+    private void OnDamaged(SocketIOEvent obj)
+    {
+        var data = new
+        {
+            target = "",
+            hp = new float(),
+            skillName = "",
+            direction = new float[3]
+        };
+        data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
+        print(data.skillName);
+        float[] direction = data.direction;
+        if (data.skillName == SkillName.Fireball.ToString())
+        {
+            playerDict[data.target].GetComponent<Player>().Knockback(VectorJson.ToVector3(direction));
+        }
+        else if (data.skillName == SkillName.Lightning.ToString())
+        {
+            playerDict[data.target].GetComponent<Player>().Stun();
+        }
+        else
+        {
+            playerDict[data.target].GetComponent<Player>().Stun();
+        }
+        playerDict[data.target].GetComponent<Player>().GetDamage(data.hp);
+    }
     private void OnDestroySkill(SocketIOEvent obj)
     {
-        Debug.Log("[SocketIO] OnDestroySkill: "+ obj.data.GetField("id").str);
+        Debug.Log("[SocketIO] OnDestroySkill: " + obj.data.GetField("id").str);
         string id = obj.data.GetField("id").str;
         if (skillDict.ContainsKey(id))
         {

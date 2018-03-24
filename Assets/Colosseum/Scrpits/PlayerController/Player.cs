@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour
     public Transform atkSpawnPoint;
     #region Variables
     public bool isLocal;
+    public bool isDead;
     public PlayerJson playerData;
     public SkillData[] skill;
     Vector3 direction;
@@ -52,6 +54,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    [Header("UI")]
+    [SerializeField] Text nameText;
+    [SerializeField] Image hpBar;
     #endregion
     #region Unity Callback
     private void Awake()
@@ -125,7 +130,12 @@ public class Player : MonoBehaviour
             runSpeed = 0;
         }
     }
-
+    internal void SetPlayerData(PlayerJson data)
+    {
+        playerData = data;
+        nameText.text = data.name;
+        hpBar.fillAmount = data.hp/100f;
+    }
     private void RotateCharacter(Vector3 dir)
     {
         Quaternion quaternion = Quaternion.LookRotation(new Vector3(dir.x, 0, dir.y));
@@ -156,14 +166,6 @@ public class Player : MonoBehaviour
     }
     void SpawnSkill(SkillData skillData, Transform currentSkillTransform)
     {
-
-        //GameObject g = SkillFactory.Instance.GetSkillObject(skillData.skillName);
-        //if (g != null)
-        //{
-        //    Skill obj = g.GetComponent<Skill>();
-        //    obj.owner = this.name;
-        //    obj.Action(currentSkillTransform);
-        //}
         // Send Bullet To Server.
         Vector3 direction = (transform.rotation * Vector3.forward).normalized;
         WSGameManager.instance.SendSpawnSkill(playerData.name,
@@ -189,7 +191,22 @@ public class Player : MonoBehaviour
             }
         });
     }
-    Tween knockbackTween;
+    public void Dead()
+    {
+        isDead = true;
+        IControllable controller = gameObject.GetComponent<PlayerController>();
+        InputHandler.instance.RemoveController(controller);
+        animController.SendAnimToServer("Dead");
+        animController.UpdateAnimation("Dead");
+        GetDamage(0);
+    }
+    public void GetDamage(float currentHp)
+    {
+        playerData.hp = currentHp;
+        //TODO: UpdateUI
+        hpBar.fillAmount = currentHp / 100f;
+    }
+    Tween animTweener;
     public void Knockback(Vector3 dir)
     {
         if (playerState == PlayerState.Rolling) { return; }
@@ -197,10 +214,35 @@ public class Player : MonoBehaviour
         animController.UpdateAnimation("IsHit");
         animController.SendAnimToServer("IsHit");
         velocity.Set(dir.x, velocity.y, dir.z);
-        if (knockbackTween != null)
-            knockbackTween.Kill();
-        knockbackTween = DOTween.To((x) => knockBackSpeed = x, 10, 0, 0.5f).OnComplete(() => playerState = PlayerState.Idle);
+        if (animTweener != null)
+            animTweener.Kill();
+        animTweener = DOTween.To((x) => knockBackSpeed = x, 10, 0, 0.5f).OnComplete(() =>
+        {
+            playerState = PlayerState.Idle;
+            if (isMoving == true)
+            {
+                Moving();
+                RotateCharacter(currentMoveDir);
+            }
+        });
     }
-
+    public void Stun()
+    {
+        if (playerState == PlayerState.Rolling) { return; }
+        playerState = PlayerState.Hit;
+        float time;
+        animController.UpdateAnimation("IsHit");
+        animController.SendAnimToServer("IsHit");
+        if (animTweener != null)
+            animTweener.Kill();
+        animTweener = DOTween.To((x) => time = x, 0, 1, 1).OnComplete(() => {
+            playerState = PlayerState.Idle;
+            if (isMoving == true)
+            {
+                Moving();
+                RotateCharacter(currentMoveDir);
+            }
+        });
+    }
 
 }

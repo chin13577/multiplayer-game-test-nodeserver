@@ -28,7 +28,7 @@ public class SynchronizeTransform : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    void Update()
     {
         if (isLocal)
         {
@@ -42,17 +42,19 @@ public class SynchronizeTransform : MonoBehaviour
         }
         else
         {
-            transform.position = Vector3.Lerp(transform.position, targetPos, 0.25f);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 0.25f);
+            transform.position = Vector3.Lerp(transform.position, targetPos, 0.1f);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 0.125f);
         }
     }
     public void SetTargetPosition(Vector3 pos)
     {
         targetPos = pos;
+        transform.position = Vector3.Lerp(transform.position, targetPos, 0.1f);
     }
     public void SetTargetRotation(Quaternion q)
     {
         targetRot = q;
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 0.125f);
     }
     void SyncPosition()
     {

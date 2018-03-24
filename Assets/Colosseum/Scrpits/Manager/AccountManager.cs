@@ -22,6 +22,8 @@ public class AccountManager : MonoBehaviour
         socket.On("error", TestError);
         socket.On("close", TestClose);
         socket.On("OnJoinRoom", OnJoinRoom);
+
+        socket.On("test-pong", Pong);
         //socket.On("OnLeaveRoom", OnJoinLobby);
         socket.On("OnRoomCreated", (e) =>
         {
@@ -61,11 +63,17 @@ public class AccountManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-
-            socket.Emit("Test");
+            d = DateTime.Now;
+            socket.Emit("test-ping");
         }
     }
-    //TODO : join to lobby
+
+    DateTime d;
+    void Pong(SocketIOEvent e)
+    {
+        TimeSpan t = DateTime.Now - d;
+        print(t.ToString());
+    }
     public void OnJoinRoom(SocketIOEvent e)
     {
         Debug.Log(e.data + "");
