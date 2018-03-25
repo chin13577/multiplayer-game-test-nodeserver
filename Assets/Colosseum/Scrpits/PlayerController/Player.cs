@@ -55,7 +55,8 @@ public class Player : MonoBehaviour
     }
 
     [Header("UI")]
-    [SerializeField] Text nameText;
+    [SerializeField]
+    Text nameText;
     [SerializeField] Image hpBar;
     #endregion
     #region Unity Callback
@@ -134,7 +135,7 @@ public class Player : MonoBehaviour
     {
         playerData = data;
         nameText.text = data.name;
-        hpBar.fillAmount = data.hp/100f;
+        hpBar.fillAmount = data.hp / 100f;
     }
     private void RotateCharacter(Vector3 dir)
     {
@@ -194,6 +195,9 @@ public class Player : MonoBehaviour
     public void Dead()
     {
         isDead = true;
+        runSpeed = 0;
+        rollSpeed = 0;
+        knockBackSpeed = 0;
         IControllable controller = gameObject.GetComponent<PlayerController>();
         InputHandler.instance.RemoveController(controller);
         animController.SendAnimToServer("Dead");
@@ -231,11 +235,15 @@ public class Player : MonoBehaviour
         if (playerState == PlayerState.Rolling) { return; }
         playerState = PlayerState.Hit;
         float time;
+        runSpeed = 0;
+        rollSpeed = 0;
+        knockBackSpeed = 0;
         animController.UpdateAnimation("IsHit");
         animController.SendAnimToServer("IsHit");
         if (animTweener != null)
             animTweener.Kill();
-        animTweener = DOTween.To((x) => time = x, 0, 1, 1).OnComplete(() => {
+        animTweener = DOTween.To((x) => time = x, 0, 1, 1).OnComplete(() =>
+        {
             playerState = PlayerState.Idle;
             if (isMoving == true)
             {

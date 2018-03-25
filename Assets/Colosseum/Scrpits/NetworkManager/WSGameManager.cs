@@ -182,6 +182,7 @@ public class WSGameManager : MonoBehaviour
     private void OnAnimChange(SocketIOEvent obj)
     {
         AnimationJson anim = JsonConvert.DeserializeObject<AnimationJson>(obj.data.GetField("animation") + "");
+        print(obj.data.GetField("name").str + " " + anim.name);
         playerDict[obj.data.GetField("name").str].GetComponent<PlayerAnimatorController>().UpdateAnimation(anim.name, anim.args);
     }
     private void OnSkillCreated(SocketIOEvent obj)
@@ -232,7 +233,10 @@ public class WSGameManager : MonoBehaviour
             target = ""
         };
         data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
-        playerDict[data.target].GetComponent<Player>().Dead();
+        if (User.instance.GetPlayerData().name == data.target)
+        {
+            playerDict[data.target].GetComponent<Player>().Dead();
+        }
     }
     private void OnDamaged(SocketIOEvent obj)
     {
@@ -244,8 +248,12 @@ public class WSGameManager : MonoBehaviour
             direction = new float[3]
         };
         data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
-        print(data.skillName);
+        print(data.target);
         float[] direction = data.direction;
+        playerDict[data.target].GetComponent<Player>().GetDamage(data.hp);
+
+        if (User.instance.GetPlayerData().name != data.target)
+            return;
         if (data.skillName == SkillName.Fireball.ToString())
         {
             playerDict[data.target].GetComponent<Player>().Knockback(VectorJson.ToVector3(direction));
@@ -258,7 +266,6 @@ public class WSGameManager : MonoBehaviour
         {
             playerDict[data.target].GetComponent<Player>().Stun();
         }
-        playerDict[data.target].GetComponent<Player>().GetDamage(data.hp);
     }
     private void OnDestroySkill(SocketIOEvent obj)
     {

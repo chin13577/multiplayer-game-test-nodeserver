@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Fireball : Skill
 {
+    public GameObject impactParticle;
+    [HideInInspector]
+    public Vector3 impactNormal; //Used to rotate impactparticle.
     Vector3 targetPos;
     public override void EnterState(Vector3 position, Vector3 direction)
     {
@@ -32,7 +35,7 @@ public class Fireball : Skill
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Skill") return;
+        if (other.tag == "Skill"|| other.tag == "Floor") return;
         if (other.name != owner)
         {
             if (other.tag == "Player")
@@ -49,6 +52,7 @@ public class Fireball : Skill
                 WSGameManager.instance.SendDestroySkill(this.id);
                 // send hit player.
             }
+            Instantiate(impactParticle, transform.position, Quaternion.FromToRotation(Vector3.up, impactNormal));
             base.DestroyObject();
         }
     }
