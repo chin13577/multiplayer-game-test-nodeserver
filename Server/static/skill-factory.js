@@ -13,5 +13,14 @@ module.exports = class SkillFactory{
             return new Frost(data.id,data.owner,data.skillName,data.position,data.direction);
         }
     }
+    getSkillDamage(skillName){
+        if(skillName == 'Fireball'){
+            return 10;
+        }else if (skillName == 'Lightning'){
+            return 15;
+        }else if(skillName == 'Frost'){
+            return 15;
+        }
+    }
 
 }

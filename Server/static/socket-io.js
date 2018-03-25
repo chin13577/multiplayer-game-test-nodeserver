@@ -1,12 +1,9 @@
-var io = require('socket.io')({ transports: ['websocket'], });
-
-io.attach(4567);
 
 var SkillFactory = require('./skill-factory');
-var GameWorld  = require('./game-world');
-module.exports = function (app) {
+var GameWorld = require('./game-world');
+module.exports = (server) => {
+    var io = require('socket.io')(server);
     var roomList = {};
-    var server = require('http').Server(app);
     var skillFactory = new SkillFactory();
 
     io.on('connection', function (socket) {
@@ -38,13 +35,15 @@ module.exports = function (app) {
         });
         // on user start game.
         socket.on('Start', (data) => {
-            if(!roomList[socket.room].world){
-                roomList[socket.room].world = new GameWorld(io,socket.room);
+            if (!roomList[socket.room].world) {
+                roomList[socket.room].world = new GameWorld(io, socket.room);
                 roomList[socket.room].world.startGameLoop();
             }
             socket.broadcast.to(socket.room).emit('OnStart', { data });
         });
-
+        socket.on('test-ping', () => {
+            socket.emit('test-pong');
+        });
         socket.on('Play', (data) => {
             console.log(JSON.stringify(data));
             if (!roomList[socket.room].spawnPoints) {
@@ -59,6 +58,7 @@ module.exports = function (app) {
             currentPlayer = {
                 name: data.name,
                 hp: 100,
+                isDead: false
             }
             currentPlayer.position = roomList[socket.room].spawnPoints[roomList[socket.room].players.length];
             roomList[socket.room].players.push(currentPlayer);
@@ -103,7 +103,32 @@ module.exports = function (app) {
             roomList[socket.room].world.addGameObject(skill);
             console.log(skill);
         });
-        
+        socket.on('Attack', (data) => {
+            let playerTarget = roomList[socket.room].players.find(x => x.name === data.target);
+            if (playerTarget) {
+                if (playerTarget.isDead === true) {
+                    return;
+                }
+                let damage = skillFactory.getSkillDamage(data.skillName);
+                playerTarget.hp -= damage;
+                if (playerTarget.hp <= 0) {
+                    playerTarget.isDead = true; 
+                    let obj = {
+                        target: playerTarget.name,
+                    }
+                    io.to(socket.room).emit('OnDead', obj);
+                } else {
+                    let obj = {
+                        target: playerTarget.name,
+                        hp: playerTarget.hp,
+                        skillName: data.skillName,
+                        direction: data.direction
+                    }
+                    io.to(socket.room).emit('OnDamaged', obj);
+                }
+            }
+        });
+
         socket.on('DestroySkill', (id) => {
             console.log(id);
             roomList[socket.room].world.destroyGameObject(id);
@@ -129,56 +154,56 @@ module.exports = function (app) {
     });
     return io;
 
-    
-    function addUserInRoom (socket, user){
-    if (!roomList[socket.room]) {
-        // check room is undefine so create room.
-        roomList[socket.room] = {};
-        roomList[socket.room].users = [];
-        roomList[socket.room].users.push(user);
-        let roomData = getRoomData();
-        io.to("lobby").emit("OnRoomCreated", { roomData });
-    } else {
-        // else check if user isn't exist.
-        let index = roomList[socket.room].users.indexOf(user);
-        if (index === -1) {
+
+    function addUserInRoom(socket, user) {
+        if (!roomList[socket.room]) {
+            // check room is undefine so create room.
+            roomList[socket.room] = {};
+            roomList[socket.room].users = [];
             roomList[socket.room].users.push(user);
-            let userInRoom = roomList[socket.room].users;
-            socket.broadcast.to(socket.room).emit("OnJoinRoom", { userInRoom });
-        }
-    }
-}
-function removePlayerInRoom(socket, user) {
-    if (roomList[socket.room].players) {
-        let index = roomList[socket.room].players.findIndex((element) => {
-            return element.name === user.name;
-        });
-        if (index !== -1) {
-            roomList[socket.room].players.splice(index, 1);
-        }
-    }
-}
-function removeUserInRoom(socket, user) {
-    let index = roomList[socket.room].users.indexOf(user);
-    if (index !== -1) {
-        roomList[socket.room].users.splice(index, 1);
-        if (roomList[socket.room].users.length === 0) {
-            if(roomList[socket.room].world){
-                roomList[socket.room].world.stopGameLoop();
+            let roomData = getRoomData();
+            io.to("lobby").emit("OnRoomCreated", { roomData });
+        } else {
+            // else check if user isn't exist.
+            let index = roomList[socket.room].users.indexOf(user);
+            if (index === -1) {
+                roomList[socket.room].users.push(user);
+                let userInRoom = roomList[socket.room].users;
+                socket.broadcast.to(socket.room).emit("OnJoinRoom", { userInRoom });
             }
-            delete roomList[socket.room];
         }
     }
-}
-function getRoomData() {
-    let data = [];
-    let roomNames = Object.getOwnPropertyNames(roomList);
-    for (i = 0; i < roomNames.length; i++) {
-        data.push({
-            name: roomNames[i],
-            length: roomList[roomNames[i]].users.length
-        });
+    function removePlayerInRoom(socket, user) {
+        if (roomList[socket.room].players) {
+            let index = roomList[socket.room].players.findIndex((element) => {
+                return element.name === user.name;
+            });
+            if (index !== -1) {
+                roomList[socket.room].players.splice(index, 1);
+            }
+        }
     }
-    return data;
-}
+    function removeUserInRoom(socket, user) {
+        let index = roomList[socket.room].users.indexOf(user);
+        if (index !== -1) {
+            roomList[socket.room].users.splice(index, 1);
+            if (roomList[socket.room].users.length === 0) {
+                if (roomList[socket.room].world) {
+                    roomList[socket.room].world.stopGameLoop();
+                }
+                delete roomList[socket.room];
+            }
+        }
+    }
+    function getRoomData() {
+        let data = [];
+        let roomNames = Object.getOwnPropertyNames(roomList);
+        for (i = 0; i < roomNames.length; i++) {
+            data.push({
+                name: roomNames[i],
+                length: roomList[roomNames[i]].users.length
+            });
+        }
+        return data;
+    }
 }
