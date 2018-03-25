@@ -132,6 +132,7 @@ public class WSGameManager : MonoBehaviour
                     g.AddComponent<PlayerController>();
                     g.GetComponent<Player>().isLocal = true;
                     g.GetComponent<SynchronizeTransform>().isLocal = true;
+                    Camera.main.GetComponent<CameraTracking>().target = g.transform;
                 }
                 else
                 {

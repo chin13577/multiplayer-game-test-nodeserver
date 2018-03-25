@@ -30,7 +30,7 @@ MonoBehaviour:
     castAnim: {fileID: 7400000, guid: 8811d53408fdb2c49b9e2c2dadd43aa2, type: 2}
   - skillType: 2
     skillName: 2
-    size: 1.5
+    size: 2
     distance: 3.5
     isSelectArea: 0
     coolDown: 5
