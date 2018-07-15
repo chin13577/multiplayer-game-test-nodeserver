@@ -233,6 +233,7 @@ public class WSGameManager : MonoBehaviour
             target = ""
         };
         data = JsonConvert.DeserializeAnonymousType(obj.data + "", data);
+        playerDict[data.target].GetComponent<Player>().GetDamage(0);
         if (User.instance.GetPlayerData().name == data.target)
         {
             playerDict[data.target].GetComponent<Player>().Dead();
